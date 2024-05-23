@@ -1,0 +1,17 @@
+/* resources/css/index.css */
+@import 'reset.css';
+@import 'buttons.css';
+@import 'margin.css';
+@import 'padding.css';
+@import 'typography.css';
+@import 'app.css';
+@import 'styles.css';
+@import 'form.css';
+@import 'table.css';
+@import 'sidebar.css';
+@import '../scss/shadow.css';
+@import '../scss/border.css';
+@import '../scss/layout.css';
+@import '../scss/margin.css';
+@import '../scss/padding.css';
+@import '../scss/bg.css';

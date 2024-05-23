@@ -1,0 +1,55 @@
+# Laravel specific
+vendor/
+test
+/node_modules/
+/public/hot/
+/public/storage
+/storage/*.key
+/.phpunit.result.cache
+/.phpunit.cache
+/phpunit.xml
+/homestead.yml
+/homestead.rb
+.env
+.env.backup
+.phpstorm.meta.php
+
+# Ignore .idea directory if you're using PhpStorm
+.idea/
+
+# Ignore any OS generated files
+.DS_Store
+Thumbs.db
+
+# Ignore package build and cache directories
+/build/
+/cache/
+
+# Ignore environment-specific files
+.env.local
+.env.development
+.env.testing
+.env.production
+
+# Ignore composer lock file if you're not distributing the package
+composer.lock
+
+# Ignore logs and other temporary files
+/storage/logs/*.log
+/vendor/
+
+# Ignore any compiled binaries or build output
+/public/css/*.css
+/public/js/*.js
+/public/mix-manifest.json
+/public/web.config
+/public/hot/*.js
+/public/hot/*.js.map
+
+# Ignore IDE and editor files
+/.vscode/
+/.idea/
+*.iml
+
+# Ignore OS generated files
+.DS_Store

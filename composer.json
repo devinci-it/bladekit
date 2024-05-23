@@ -1,0 +1,46 @@
+{
+    "name": "devinci-it/bladekit",
+    "description": "A Laravel package providing Livewire and Blade view components.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "devinci-it",
+            "email": "vince.dev@icloud.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": "^8.3",
+        "laravel/framework": "*",
+        "livewire/livewire": "^3.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Devinci\\Bladekit\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Devinci\\Bladekit\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Devinci\\Bladekit\\BladekitServiceProvider"
+            ]
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.0"
+    },
+
+    "scripts": {
+        "post-install-cmd": [
+            "php post-install.php"
+        ]
+    }
+}
+
+
