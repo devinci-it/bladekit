@@ -1,0 +1,60 @@
+/**
+ * SCSS mixin for defining borders with customizable sides, width, and color,
+ * along with ready-to-use classes for common border styles.
+ */
+.bt {
+  border-top: 1px solid #ccc; }
+
+.br {
+  border-right: 1px solid #ccc; }
+
+.bb {
+  border-bottom: 1px solid #ccc; }
+
+.bl {
+  border-left: 1px solid #ccc; }
+
+.bh {
+  border-top: 1px solid #ccc;
+  border-bottom: 1px solid #ccc; }
+
+.bv {
+  border-right: 1px solid #ccc;
+  border-left: 1px solid #ccc; }
+
+.ba {
+  border: 1px solid #ccc; }
+
+.bp {
+  border: 2px solid #007bff; }
+
+.bs {
+  border: 1px solid #6c757d; }
+
+.bg {
+  border: 2px solid #28a745; }
+
+.bd {
+  border: 2px solid #dc3545; }
+
+.bw {
+  border: 2px solid #ffc107; }
+
+.bi {
+  border: 2px solid #17a2b8; }
+
+.bg-dark {
+  border: 1px solid #343a40; }
+
+/*
+Sample usage:
+
+<div class="ba bp">Primary Border</div>
+<div class="bt bg">Top Border</div>
+<div class="br bd">Right Border</div>
+<div class="bb bw">Bottom Border</div>
+<div class="bl bi">Left Border</div>
+<div class="bg-dark">Gray Accent Dark Border</div>
+*/
+
+/*# sourceMappingURL=border.css.map */

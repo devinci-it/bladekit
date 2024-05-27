@@ -1,7 +1,7 @@
 <?php
 
 namespace Devinci\Bladekit;
-
+use Devinci\Bladekit\DirectiveRegistry;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Blade;
 
@@ -14,8 +14,9 @@ class BladekitServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->loadViewsFrom(__DIR__.'/../resources/views', 'bladekit');
+        DirectiveRegistry::registerAllDirectives();
 
+        $this->loadViewsFrom(__DIR__.'/../resources/views', 'bladekit');
         $this->registerComponents();
 
         // Publish views
@@ -39,17 +40,10 @@ class BladekitServiceProvider extends ServiceProvider
             return '<script src="' . asset('js/vendor/devinci-it/bladekit/app.js') . '"></script>';
         });
 
-        // Registering the blade directive for including styles
-        Blade::directive('bladekitStyles', function () {
-            return '<link rel="stylesheet" href="' . asset('css/vendor/devinci-it/bladekit/index.css') . '">' .
-                '<link rel="stylesheet" href="' . asset('css/vendor/devinci-it/bladekit/shadow.css') . '">' .
-                '<link rel="stylesheet" href="' . asset('css/vendor/devinci-it/bladekit/border.css') . '">' .
-                '<link rel="stylesheet" href="' . asset('css/vendor/devinci-it/bladekit/layout.css') . '">' .
-                '<link rel="stylesheet" href="' . asset('css/vendor/devinci-it/bladekit/margin.css') . '">' .
-                '<link rel="stylesheet" href="' . asset('css/vendor/devinci-it/bladekit/padding.css') . '">' .
-                '<link rel="stylesheet" href="' . asset('css/vendor/devinci-it/bladekit/bg.css') . '">';
-        });
+
     }
+
+
 
 
     /**
