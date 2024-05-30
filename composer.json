@@ -14,7 +14,8 @@
         "php": "^8.3",
         "laravel/framework": "*",
         "livewire/livewire": "^3.0",
-        "scssphp/scssphp": "*"
+        "scssphp/scssphp": "*",
+        "symfony/console": "7.2.x-dev"
     },
     "autoload": {
         "psr-4": {

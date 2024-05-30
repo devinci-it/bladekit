@@ -1,6 +1,7 @@
 <?php
 namespace Devinci\Bladekit\Services;
-use Symfony\Component\Console\Output\ConsoleOutput;
+
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 
 /**
@@ -11,7 +12,7 @@ use Illuminate\Support\Facades\File;
  * add new assets, and remove published assets.
  *
  * Quick Reference:
- *   - initializeAssets(): Initializes the Bladekit assets by defining their paths.
+ *   - initializeAssets(): Initializes the Bladekit assets by defining their paths and compiling Sass.
  *   - promptConfirmation(string $message, callable $callback): Prompts the user for confirmation
  *     with a given message and executes the provided callback function if the user responds with "yes".
  *   - modifyDirectoryPermissions(string $directory, int $permissions): Modifies the permissions
@@ -25,9 +26,11 @@ class BladekitAssetRegistrar
 {
     protected static $assets = [];
 
+    /**
+     * Initialize Bladekit assets and compile Sass.
+     */
     protected static function initializeAssets()
     {
-
         if (empty(self::$assets)) {
             self::$assets = [
                 'bladekit-views' => [
@@ -41,11 +44,51 @@ class BladekitAssetRegistrar
                     __DIR__ . '/../../resources/js' => public_path('assets/vendor/bladekit/js'),
                 ],
             ];
-
         }
 
+        self::compileSass();
+        self::appendGeneratedCssFiles();
     }
 
+    /**
+     * Compile Sass files using the bladekit:compile-sass command.
+     */
+    protected static function compileSass()
+    {
+        Artisan::call('bladekit:compile-sass');
+    }
+
+    /**
+     * Append generated CSS files to the 'bladekit-assets'.
+     */
+    protected static function appendGeneratedCssFiles()
+    {
+        $cssFiles = self::getGeneratedCssFiles();
+
+        foreach ($cssFiles as $cssFile) {
+            $destinationPath = public_path('assets/vendor/bladekit/css/' . basename($cssFile));
+            self::$assets['bladekit-assets'][$cssFile] = $destinationPath;
+        }
+    }
+
+    /**
+     * Get the paths of the generated CSS files.
+     *
+     * @return array
+     */
+    public static function getGeneratedCssFiles(): array
+    {
+        $cssDirectory = __DIR__ . '/../../build/scss';
+        $cssFiles = glob($cssDirectory . '/*.css');
+        return $cssFiles;
+    }
+
+    /**
+     * Prompt for user confirmation.
+     *
+     * @param string $message
+     * @param callable $callback
+     */
     protected static function promptConfirmation(string $message, callable $callback): void
     {
         $confirmation = readline("$message (yes/no): ");
@@ -54,6 +97,12 @@ class BladekitAssetRegistrar
         }
     }
 
+    /**
+     * Modify directory permissions.
+     *
+     * @param string $directory
+     * @param int $permissions
+     */
     protected static function modifyDirectoryPermissions(string $directory, int $permissions): void
     {
         if (!File::isDirectory($directory)) {
@@ -64,7 +113,6 @@ class BladekitAssetRegistrar
             throw new \RuntimeException("Failed to modify permissions for directory: " . $directory);
         }
     }
-
 
     /**
      * Get the paths of the assets to be published.
@@ -89,7 +137,6 @@ class BladekitAssetRegistrar
         self::$assets[$tag] = $paths;
     }
 
-
     /**
      * Remove published assets.
      *
@@ -97,10 +144,13 @@ class BladekitAssetRegistrar
      */
     public static function removeAsset(string $tag)
     {
-        // Remove published assets corresponding to the tag
-        $paths = self::$assets[$tag];
+        $paths = self::$assets[$tag] ?? [];
+
         foreach ($paths as $from => $to) {
             app('files')->deleteDirectory($to);
         }
+
+        unset(self::$assets[$tag]);
     }
 }
+
