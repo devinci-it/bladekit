@@ -1,0 +1,167 @@
+<?php
+
+require_once __DIR__ . '/vendor/autoload.php';
+
+use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Console\Question\ChoiceQuestion;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
+use Symfony\Component\Console\Question\Question;
+
+class ApprenticeApp extends Command
+{
+    const LOCKFILE = '.apprentice/task.lock';
+
+    private $style;
+
+    protected function configure()
+    {
+        $this->setName('apprentice')
+             ->setDescription('Apprentice CLI for managing tasks, changelogs, and versioning');
+    }
+
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
+        $this->style = new SymfonyStyle($input, $output);
+        $this->style->title('Apprentice CLI');
+
+        // Check if lockfile exists
+        if (file_exists(self::LOCKFILE)) {
+            $this->style->warning('A task is already in progress. Please complete it before starting a new one.');
+            return Command::FAILURE;
+        }
+
+        // Create lockfile
+        file_put_contents(self::LOCKFILE, '');
+
+        // Main menu loop
+        while (true) {
+            $this->menu();
+
+            // Break the loop for now to prevent infinite loop
+            break;
+        }
+
+        // Remove lockfile upon push to origin main
+        $this->pushToMain();
+        $this->removeLockfile();
+
+        return Command::SUCCESS;
+    }
+
+    private function menu()
+    {
+        $choices = [
+            'Start a new task',
+            'Add files to git',
+            'Commit changes',
+            'Create a tag',
+            'Quit'
+        ];
+
+        $action = $this->style->choice('Please select an action:', $choices);
+
+        switch ($action) {
+            case 'Start a new task':
+                $this->startNewTask();
+                break;
+            case 'Add files to git':
+                $this->addFilesToGit();
+                break;
+            case 'Commit changes':
+                $this->commitChanges();
+                break;
+            case 'Create a tag':
+                $this->createTag();
+                break;
+            case 'Quit':
+                exit;
+                break;
+        }
+    }
+
+    private function startNewTask()
+    {
+        $taskId = uniqid();
+        $this->style->section("Task ID: $taskId");
+
+        $task = $this->style->ask('Enter task/goal:');
+        $changelogFile = $this->style->ask('Enter changelog file:', 'CHANGELOG.md');
+        $commitMessage = $this->style->ask('Enter commit message:');
+        $versionType = $this->askVersionType();
+
+        // Record task details to changelog file
+        file_put_contents($changelogFile, "\n## [$versionType] - " . date('Y-m-d') . "\n- **$task**\n", FILE_APPEND);
+
+        // Commit changes
+        exec("git add $changelogFile");
+        exec("git commit -m \"$commitMessage\"");
+        $this->style->success('Changes committed successfully.');
+
+        // Save the task ID to the lockfile
+        file_put_contents(self::LOCKFILE, $taskId);
+    }
+
+    private function addFilesToGit()
+    {
+        $files = $this->style->ask('Enter files to add (comma-separated):');
+        $files = array_map('trim', explode(',', $files));
+
+        foreach ($files as $file) {
+            exec("git add $file");
+        }
+
+        $this->style->success('Files added to git.');
+    }
+
+    private function commitChanges()
+    {
+        $commitMessage = $this->style->ask('Enter commit message:');
+        exec("git commit -m \"$commitMessage\"");
+
+        $this->style->success('Changes committed successfully.');
+    }
+
+    private function createTag()
+    {
+        $tag = $this->style->ask('Enter tag name:');
+        exec("git tag $tag");
+
+        $this->style->success("Tag $tag created successfully.");
+    }
+
+    private function askVersionType()
+    {
+        $versionTypeChoices = [
+            'Bug fix',
+            'New feature',
+            'Major release'
+        ];
+
+        $versionType = $this->style->choice('Select the version type:', $versionTypeChoices);
+
+        return $versionType;
+    }
+
+    private function pushToMain()
+    {
+        $this->style->writeln('Pushing changes to origin main...');
+        exec('git push origin main');
+        $this->style->success('Changes pushed successfully!');
+    }
+
+    private function removeLockfile()
+    {
+        if (file_exists(self::LOCKFILE)) {
+            unlink(self::LOCKFILE);
+            $this->style->success('Lockfile removed.');
+        }
+    }
+}
+
+$app = new Application();
+$app->add(new ApprenticeApp());
+$app->run();
