@@ -1,61 +1,133 @@
 <?php
 
 namespace Devinci\Bladekit;
-use Devinci\Bladekit\DirectiveRegistry;
-use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\Blade;
 
+
+use Devinci\Bladekit\Services\BladekitAssetRegistrar;
+use Devinci\Bladekit\Services\BladekitCommandRegistrar;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Log;
+use Devinci\Bladekit\DirectiveRegistry;
+use Devinci\Bladekit\Console\Commands\BladekitFresh;
+
+
+use Illuminate\Support\Facades\ExceptionHandler;
+use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\ServiceProvider;
 class BladekitServiceProvider extends ServiceProvider
 {
+
+    protected $commandRegistrar;
+    protected $devMode;
+
+
+
+
+    public function __construct($app)
+    {
+
+        parent::__construct($app);
+        $this->registerConfig();
+
+        $this->devMode = config('bladekit.dev_mode');
+
+        $this->commandRegistrar = new BladekitCommandRegistrar($this->devMode);
+    }
+
+    public function register()
+    {
+        $this->loadConfigurationFiles($this->app);
+    }
     /**
      * Bootstrap any package services.
      *
      * @return void
      */
+
     public function boot()
     {
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Command Registration
+        |--------------------------------------------------------------------------
+        |
+        */
+
+
+        $this->commandRegistrar->initializeCommandClasses();
+
+        if ($this->app->runningInConsole()) {
+            $this->registerBladekitCommands();
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Asset Registration
+        |--------------------------------------------------------------------------
+        |
+        */
+        $assets = BladekitAssetRegistrar::getAssets();
+        foreach ($assets as $tag => $paths) {
+            $this->publishes($paths, $tag);
+        }
+
+
+    /*
+      |--------------------------------------------------------------------------
+      | Publish Opt Files
+      |--------------------------------------------------------------------------
+      |
+     */
+
+
+
+
         DirectiveRegistry::registerAllDirectives();
 
-        $this->loadViewsFrom(__DIR__.'/../resources/views', 'bladekit');
-        $this->registerComponents();
-
-        // Publish views
-        $this->publishes([
-            __DIR__.'/../resources/views' => resource_path('views/vendor/devinci-it/bladekit'),
-        ], 'bladekit-views');
-
-        // Publish CSS, fonts, icons, images, JS, and SCSS
-        $this->publishes([
-            __DIR__.'/../resources/css' => public_path('css/vendor/devinci-it/bladekit'),
-            __DIR__.'/../resources/fonts' => public_path('fonts/vendor/devinci-it/bladekit'),
-            __DIR__.'/../resources/icons' => public_path('icons/vendor/devinci-it/bladekit'),
-            __DIR__.'/../resources/images' => public_path('images/vendor/devinci-it/bladekit'),
-            __DIR__.'/../resources/js' => public_path('js/vendor/devinci-it/bladekit'),
-            __DIR__.'/../resources/scss' => resource_path('scss/vendor/devinci-it/bladekit'),
-            // Add more directories as needed
-        ], 'bladekit-assets');
-
-        // Include compiled JS file
-        Blade::directive('bladekitScripts', function () {
-            return '<script src="' . asset('js/vendor/devinci-it/bladekit/app.js') . '"></script>';
-        });
 
 
     }
 
+    protected function registerConfig():void
+    {
+        $this->mergeConfigFrom(
+            __DIR__.'/../config/bladekit.php', 'bladekit'
+        );
+    }
+
+    protected function registerBladekitCommands():void
+    {
+        if ($this->app->runningInConsole()) {
+            $commandClasses = $this->commandRegistrar->commandClasses;
+            $this->commands($commandClasses);
+        }
+    }
 
 
+    protected function loadConfigurationFiles($app)
+    {
+        $configPath = __DIR__ . '/../config/bladekit.php';
 
+        if (file_exists($configPath)) {
+            $this->mergeConfigFrom($configPath, 'bladekit');
+        }
+
+        $this->publishes([
+            $configPath => config_path('bladekit.php'),
+        ], 'bladekit-config');
+    }
     /**
      * Register Livewire and Blade components.
      *
      * @return void
      */
-    protected function registerComponents()
+    protected function registerComponents() :void
     {
         $this->callAfterResolving('livewire.manager', function ($livewire) {
-            $livewire->component('bladekit::livewire.search-bar', \Devinci\Bladekit\Livewire\SearchBar::class);
-            $livewire->component('bladekit::livewire.search-component', \Devinci\Bladekit\Livewire\SearchComponent::class);
+            $livewire->component('bladekit::livewire.search-bar', Livewire\SearchBar::class);
+            $livewire->component('bladekit::livewire.search-component', Livewire\SearchComponent::class);
         });
 
         $this->callAfterResolving('blade.compiler', function ($bladeCompiler) {
@@ -63,4 +135,9 @@ class BladekitServiceProvider extends ServiceProvider
             $bladeCompiler->component('bladekit::components.search-results', 'search-results');
         });
     }
+
+
+
+
+
 }

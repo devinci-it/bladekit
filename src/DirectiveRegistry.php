@@ -3,6 +3,8 @@
 namespace Devinci\Bladekit;
 
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Log;
+
 
 class DirectiveRegistry
 {
@@ -13,85 +15,102 @@ class DirectiveRegistry
      */
     public static function registerAllDirectives()
     {
-        self::registerBladekitAssetsDirective();
         self::registerBladekitStylesDirective();
         self::registerBladekitScriptsDirective();
-        self::registerBladekitSvgDirective();
-        // Add more directive registration calls as needed
+        self::registerBladekitAssetDirective();
     }
 
-    protected static function registerBladekitAssetsDirective()
+    /**
+     * Register the directive for including JS files.
+     *
+     * @return string The generated script tag.
+     */
+    protected static function registerBladekitScriptsDirective()
     {
-        Blade::directive('bladekitAssets', function () {
-            // Get the base URL for the package's CSS directory
-            $baseUrl = (__DIR__.'/../resources/css/');
-
-            // Generate the link tag for each CSS file
-            $links = '';
-
-            foreach (glob(public_path('vendor/devinci-it/bladekit/resources/css/*.css')) as $cssFile) {
-                $fileName = basename($cssFile);
-                $links .= '<link rel="stylesheet" href="' . $baseUrl . $fileName . '">' . PHP_EOL;
-            }
-
-            return $links;
+        Blade::directive('bladekitScripts', function () {
+            return '<script src="' . asset(static::getJsPath()) . '"></script>' . PHP_EOL;
         });
+    }
+
+    /**
+     * Get the path for Bladekit JavaScript file.
+     *
+     * @return string The JavaScript file path.
+     */
+    protected static function getJsPath()
+    {
+        $publishedJsPath = public_path('js/vendor/devinci-it/bladekit/bladekit.js');
+        return $publishedJsPath;
+//        return file_exists($publishedJsPath) ? asset('js/vendor/devinci-it/bladekit/bladekit.js') : asset('js/vendor/devinci-it/bladekit/bladekit.js');
     }
 
 
     /**
      * Register the directive for including CSS files.
      *
-     * @return void
+     * @return string The generated link tags for CSS files.
      */
     protected static function registerBladekitStylesDirective()
     {
         Blade::directive('bladekitStyles', function () {
-            $cssFiles = glob(resource_path('/css/*.css'));
+            $cssFiles = static::getCssFiles();
 
-            // If CSS files are not published, use the local resources path
-            if (empty($cssFiles)) {
-                $cssFiles = glob(__DIR__ . '/../resources/css/*.css');
-            }
-
-            $links = '';
-
-            foreach ($cssFiles as $cssFile) {
-                $links .= '<link rel="stylesheet" href="' . asset('vendor/devinci-it/bladekit/resources/css/' . basename($cssFile)) . '">' . PHP_EOL;
-            }
-
-            return $links;
+            return implode(PHP_EOL, array_map(function ($file) {
+                return '<link rel="stylesheet" href="' . asset($file) . '">';
+            }, $cssFiles));
         });
     }
 
     /**
-     * Register the directive for including JS files.
+     * Get Bladekit CSS files.
      *
-     * @return void
+     * @return array CSS files paths.
      */
-    protected static function registerBladekitScriptsDirective()
+    protected static function getCssFiles()
     {
-        Blade::directive('bladekitScripts', function () {
-            $jsFiles = glob(public_path('vendor/devinci-it/bladekit/resources/js/*.js'));
-            $scripts = '';
+        $publishedCssPath = public_path('vendor/devinci-it/bladekit/css/');
 
-            foreach ($jsFiles as $jsFile) {
-                $scripts .= '<script src="' . asset('vendor/devinci-it/bladekit/resources/js/' . basename($jsFile)) . '"></script>' . PHP_EOL;
+        if (file_exists($publishedCssPath)) {
+            $cssFiles = glob($publishedCssPath . '*.css');
+            return array_map('asset', $cssFiles);
+        }
+
+        $cssFiles = glob(__DIR__ . '/../resources/css/*.css');
+        return array_map('asset', $cssFiles);
+    }
+
+
+
+    protected static function registerBladekitAssetDirective()
+    {
+        Blade::directive('bladekitAsset', function ($expression) {
+            try {
+                // Extract parameters from the expression
+                preg_match('/(\'|")([^\'"]+)(\'|")/', $expression, $matches);
+                $assetName = trim($matches[2]); // Assuming the expression only contains the asset name
+
+                // Construct the full asset path within the published directory
+                $publishedPath = "js/vendor/devinci-it/bladekit/js/$assetName";
+
+                // Check if the published asset exists
+                if (file_exists(public_path($publishedPath))) {
+                    return asset($publishedPath); // Return the asset URL using the asset() helper function
+                }
+
+                // If the published asset does not exist, log a warning
+                Log::warning("Published asset '$publishedPath' not found.");
+
+                // Optionally, you can handle the missing asset further or return a fallback value
+                return '';
+            } catch (\Exception $e) {
+                // Log the exception
+                Log::error($e->getMessage());
+
+                // Optionally, you can handle the exception further or return a fallback value
+                return '';
             }
-
-            return $scripts;
         });
     }
 
-    /**
-     * Register the directive for including SVG icons.
-     *
-     * @return void
-     */
-    protected static function registerBladekitSvgDirective()
-    {
-        Blade::directive('bladekitSvg', function ($expression) {
-            return '<svg><use xlink:href="' . asset('vendor/devinci-it/bladekit/resources/icons/' . $expression . '.svg') . '"></use></svg>';
-        });
-    }
+
 }
