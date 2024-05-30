@@ -53,3 +53,13 @@ composer.lock
 
 # Ignore OS generated files
 .DS_Store
+# Ignore compiled CSS and map files
+public/assets/vendor/bladekit/css/*.css
+public/assets/vendor/bladekit/css/*.css.map
+
+# Ignore node_modules
+node_modules/
+
+# Ignore Laravel Mix files
+npm-debug.log
+yarn-error.log
