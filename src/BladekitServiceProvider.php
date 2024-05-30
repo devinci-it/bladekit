@@ -5,6 +5,8 @@ namespace Devinci\Bladekit;
 
 use Devinci\Bladekit\Services\BladekitAssetRegistrar;
 use Devinci\Bladekit\Services\BladekitCommandRegistrar;
+use Devinci\Bladekit\Services\BladekitDirectiveRegistrar;
+
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Log;
 use Devinci\Bladekit\DirectiveRegistry;
@@ -57,7 +59,6 @@ class BladekitServiceProvider extends ServiceProvider
 
 
         $this->commandRegistrar->initializeCommandClasses();
-
         if ($this->app->runningInConsole()) {
             $this->registerBladekitCommands();
         }
@@ -69,25 +70,25 @@ class BladekitServiceProvider extends ServiceProvider
         |
         */
         $assets = BladekitAssetRegistrar::getAssets();
-        foreach ($assets as $tag => $paths) {
-            $this->publishes($paths, $tag);
+        if (count($assets) > 0) {
+          $this->registerPublishableAssets($assets);
         }
 
-
-    /*
+     /*
       |--------------------------------------------------------------------------
-      | Publish Opt Files
+      | Directive Registration
       |--------------------------------------------------------------------------
       |
      */
+        BladekitDirectiveRegistrar::register();
 
+     }
 
-
-
-        DirectiveRegistry::registerAllDirectives();
-
-
-
+    protected function registerPublishableAssets($assets)
+    {
+        foreach ($assets as $tag => $paths) {
+            $this->publishes($paths, $tag);
+        }
     }
 
     protected function registerConfig():void
@@ -105,8 +106,7 @@ class BladekitServiceProvider extends ServiceProvider
         }
     }
 
-
-    protected function loadConfigurationFiles($app)
+    protected function loadConfigurationFiles()
     {
         $configPath = __DIR__ . '/../config/bladekit.php';
 
@@ -118,6 +118,8 @@ class BladekitServiceProvider extends ServiceProvider
             $configPath => config_path('bladekit.php'),
         ], 'bladekit-config');
     }
+
+
     /**
      * Register Livewire and Blade components.
      *

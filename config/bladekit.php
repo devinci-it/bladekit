@@ -14,6 +14,7 @@ return [
      | Directory Paths
      |--------------------------------------------------------------------------
      */
+
     'package_root' => __DIR__ . '/..',
     'resources_path' => __DIR__ . '/../resources',
     'views_path' => __DIR__ . '/../resources/views',
@@ -31,9 +32,6 @@ return [
     |
     */
     'dev_mode' => env('BLADEKIT_DEV_MODE', true),
-
-    // Add similar comment blocks for other configuration pairs here
-    'package_name' => 'Bladekit',
 
 
     ];
