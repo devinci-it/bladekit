@@ -23,6 +23,7 @@ class ToggleSwitch extends Component
 
     public function render()
     {
-        return view('bladekit::components.widgets.toggle-switch');
+        return view('blade::components.widgets.toggle-switch');
     }
+
 }

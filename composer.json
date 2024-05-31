@@ -15,7 +15,8 @@
         "laravel/framework": "*",
         "livewire/livewire": "^3.0",
         "scssphp/scssphp": "*",
-        "symfony/console": "7.2.x-dev"
+        "symfony/console": "7.2.x-dev",
+        "symfony/yaml": "7.2.x-dev"
     },
     "autoload": {
         "psr-4": {

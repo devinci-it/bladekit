@@ -72,3 +72,4 @@ artisan
 # Ignore webpack mix file
 webpack.mix.js
 .changelog
+/.sandbox/

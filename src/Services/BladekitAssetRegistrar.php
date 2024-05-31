@@ -44,6 +44,9 @@ class BladekitAssetRegistrar
                     __DIR__ . '/../../resources/images' => public_path('assets/vendor/bladekit/images'),
                     __DIR__ . '/../../resources/js' => public_path('assets/vendor/bladekit/js'),
                 ],
+                'bladekit-config' => [
+                    __DIR__ . '/../../config/bladekit.php' => config_path('bladekit.php'),
+                ],
             ];
         }
 

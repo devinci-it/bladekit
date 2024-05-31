@@ -1,0 +1,13 @@
+// stubs/view-docstring.stub
+
+@php
+/**
+ * {{name}} component.
+ *
+ * This component renders a {{name}} with the following properties:
+ *
+@foreach($props as $prop => $description)
+ * - {{ $prop }}: {{ $description }}
+@endforeach
+ */
+@endphp

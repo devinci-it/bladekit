@@ -2,15 +2,21 @@
 
 namespace Devinci\Bladekit;
 
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Blade;
+
+
 use Devinci\Bladekit\Services\BladekitAssetRegistrar;
 use Devinci\Bladekit\Services\BladekitCommandRegistrar;
 use Devinci\Bladekit\Services\BladekitDirectiveRegistrar;
-
+use Devinci\Bladekit\Services\BladekitViewRegistrar;
 class BladekitServiceProvider extends ServiceProvider
 {
     protected $commandRegistrar;
+    protected $viewRegistrar;
+
     protected $devMode;
 
     /**
@@ -24,6 +30,7 @@ class BladekitServiceProvider extends ServiceProvider
         $this->registerConfig();
         $this->devMode = config('bladekit.dev_mode');
         $this->commandRegistrar = new BladekitCommandRegistrar($this->devMode);
+        $this->viewRegistrar= new BladekitViewRegistrar();
 
     }
 
@@ -48,9 +55,24 @@ class BladekitServiceProvider extends ServiceProvider
         $this->registerAssets();
         $this->registerDirectives();
         $this->registerComponents();
+        $this->registerView();
 
         if ($this->app->runningInConsole()) {
             self::compileSass();
+        }
+    }
+
+    /*
+    * Register Bladekit views.
+    * @return void
+    */
+    protected function registerView()
+    {
+        try {
+            $this->viewRegistrar->register();
+            Log::info('Bladekit views registered.');
+        } catch (\Exception $e) {
+            Log::error('Bladekit views could not be registered: ' . $e->getMessage());
         }
     }
 
@@ -103,6 +125,9 @@ class BladekitServiceProvider extends ServiceProvider
             $bladeCompiler->component('bladekit::components.search-bar', 'search-bar');
             $bladeCompiler->component('bladekit::components.search-results', 'search-results');
         });
+
+        Blade::component('bladekit::widgets.toggle-switch', ToggleSwitch::class);
+
     }
 
     /**
@@ -155,10 +180,6 @@ class BladekitServiceProvider extends ServiceProvider
         if (file_exists($configPath)) {
             $this->mergeConfigFrom($configPath, 'bladekit');
         }
-
-        $this->publishes([
-            $configPath => config_path('bladekit.php'),
-        ], 'bladekit-config');
     }
 
     /**
