@@ -6,7 +6,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 use ScssPhp\ScssPhp\Compiler;
 
-class CompileBladekitSass extends Command
+class CompileSass extends Command
 {
     protected $signature = 'bladekit:compile-sass {--fresh : Force recompile and republish all SASS assets}';
 

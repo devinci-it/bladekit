@@ -2,88 +2,115 @@
 
 namespace Devinci\Bladekit;
 
-
+use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Artisan;
 use Devinci\Bladekit\Services\BladekitAssetRegistrar;
 use Devinci\Bladekit\Services\BladekitCommandRegistrar;
 use Devinci\Bladekit\Services\BladekitDirectiveRegistrar;
 
-use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Log;
-use Devinci\Bladekit\DirectiveRegistry;
-use Devinci\Bladekit\Console\Commands\BladekitFresh;
-
-
-use Illuminate\Support\Facades\ExceptionHandler;
-use Illuminate\Support\Facades\Blade;
-use Illuminate\Support\ServiceProvider;
 class BladekitServiceProvider extends ServiceProvider
 {
-
     protected $commandRegistrar;
     protected $devMode;
 
-
-
-
+    /**
+     * Constructor.
+     *
+     * @param \Illuminate\Contracts\Foundation\Application $app
+     */
     public function __construct($app)
     {
-
         parent::__construct($app);
         $this->registerConfig();
-
         $this->devMode = config('bladekit.dev_mode');
-
         $this->commandRegistrar = new BladekitCommandRegistrar($this->devMode);
+
     }
 
+    /**
+     * Register services.
+     *
+     * @return void
+     */
     public function register()
     {
-        $this->loadConfigurationFiles($this->app);
+        $this->loadConfigurationFiles();
     }
+
     /**
      * Bootstrap any package services.
      *
      * @return void
      */
-
     public function boot()
     {
+        $this->registerCommands();
+        $this->registerAssets();
+        $this->registerDirectives();
+        $this->registerComponents();
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | Command Registration
-        |--------------------------------------------------------------------------
-        |
-        */
-
-
-        $this->commandRegistrar->initializeCommandClasses();
         if ($this->app->runningInConsole()) {
-            $this->registerBladekitCommands();
+            self::compileSass();
         }
+    }
 
-        /*
-        |--------------------------------------------------------------------------
-        | Asset Registration
-        |--------------------------------------------------------------------------
-        |
-        */
+    /**
+     * Register Bladekit commands.
+     *
+     * @return void
+     */
+    protected function registerCommands()
+    {
+        $this->registerBladekitCommands();
+    }
+
+    /**
+     * Register Bladekit assets.
+     *
+     * @return void
+     */
+    protected function registerAssets()
+    {
         $assets = BladekitAssetRegistrar::getAssets();
         if (count($assets) > 0) {
-          $this->registerPublishableAssets($assets);
+            $this->registerPublishableAssets($assets);
         }
+    }
 
-     /*
-      |--------------------------------------------------------------------------
-      | Directive Registration
-      |--------------------------------------------------------------------------
-      |
+    /**
+     * Register Bladekit directives.
+     *
+     * @return void
      */
+    protected function registerDirectives()
+    {
         BladekitDirectiveRegistrar::register();
+    }
 
-     }
+    /**
+     * Register Livewire and Blade components.
+     *
+     * @return void
+     */
+    protected function registerComponents()
+    {
+        $this->callAfterResolving('livewire.manager', function ($livewire) {
+            $livewire->component('bladekit::livewire.search-bar', Livewire\SearchBar::class);
+            $livewire->component('bladekit::livewire.search-component', Livewire\SearchComponent::class);
+        });
 
+        $this->callAfterResolving('blade.compiler', function ($bladeCompiler) {
+            $bladeCompiler->component('bladekit::components.search-bar', 'search-bar');
+            $bladeCompiler->component('bladekit::components.search-results', 'search-results');
+        });
+    }
+
+    /**
+     * Register publishable assets.
+     *
+     * @param array $assets
+     * @return void
+     */
     protected function registerPublishableAssets($assets)
     {
         foreach ($assets as $tag => $paths) {
@@ -91,14 +118,24 @@ class BladekitServiceProvider extends ServiceProvider
         }
     }
 
-    protected function registerConfig():void
+    /**
+     * Merge configuration from the config file.
+     *
+     * @return void
+     */
+    protected function registerConfig()
     {
         $this->mergeConfigFrom(
             __DIR__.'/../config/bladekit.php', 'bladekit'
         );
     }
 
-    protected function registerBladekitCommands():void
+    /**
+     * Register Bladekit commands for console.
+     *
+     * @return void
+     */
+    protected function registerBladekitCommands()
     {
         if ($this->app->runningInConsole()) {
             $commandClasses = $this->commandRegistrar->commandClasses;
@@ -106,6 +143,11 @@ class BladekitServiceProvider extends ServiceProvider
         }
     }
 
+    /**
+     * Load configuration files and publish them.
+     *
+     * @return void
+     */
     protected function loadConfigurationFiles()
     {
         $configPath = __DIR__ . '/../config/bladekit.php';
@@ -119,27 +161,13 @@ class BladekitServiceProvider extends ServiceProvider
         ], 'bladekit-config');
     }
 
-
     /**
-     * Register Livewire and Blade components.
-     *
-     * @return void
+     * Compile Sass files using the bladekit:compile-sass command.
      */
-    protected function registerComponents() :void
+    protected static function compileSass()
     {
-        $this->callAfterResolving('livewire.manager', function ($livewire) {
-            $livewire->component('bladekit::livewire.search-bar', Livewire\SearchBar::class);
-            $livewire->component('bladekit::livewire.search-component', Livewire\SearchComponent::class);
-        });
-
-        $this->callAfterResolving('blade.compiler', function ($bladeCompiler) {
-            $bladeCompiler->component('bladekit::components.search-bar', 'search-bar');
-            $bladeCompiler->component('bladekit::components.search-results', 'search-results');
-        });
+        Artisan::call('bladekit:compile-sass -vvv');
     }
 
-
-
-
-
 }
+

@@ -2,6 +2,7 @@
 namespace Devinci\Bladekit\Services;
 
 use Illuminate\Support\Facades\Artisan;
+use Devinci\Bladekit\Console\Commands\CompileSass;
 use Illuminate\Support\Facades\File;
 
 /**
@@ -46,17 +47,10 @@ class BladekitAssetRegistrar
             ];
         }
 
-        self::compileSass();
         self::appendGeneratedCssFiles();
     }
 
-    /**
-     * Compile Sass files using the bladekit:compile-sass command.
-     */
-    protected static function compileSass()
-    {
-        Artisan::call('bladekit:compile-sass');
-    }
+
 
     /**
      * Append generated CSS files to the 'bladekit-assets'.
