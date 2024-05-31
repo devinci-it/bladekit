@@ -329,7 +329,7 @@ p.caption-text.mt0 {
 
 /* For webkit browsers */
 ::-webkit-scrollbar {
-    width: 10px; /* width of the scrollbar */
+    width: 3px; /* width of the scrollbar */
 }
 
 /* Track */

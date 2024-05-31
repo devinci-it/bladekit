@@ -54,6 +54,6 @@ class Flex extends Component
      */
     public function render()
     {
-        return view('bladekit::layout.flex');
+        return view('bladekit::layouts.flex');
     }
 }
