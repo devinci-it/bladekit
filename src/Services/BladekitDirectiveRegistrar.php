@@ -3,6 +3,7 @@
 namespace Devinci\Bladekit\Services;
 
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\File;
 
 class BladekitDirectiveRegistrar
 {
@@ -14,7 +15,7 @@ class BladekitDirectiveRegistrar
     public static function register()
     {
         self::registerIconDirective();
-        self::registerStyleDirective();
+        self::registerStylesDirective();
         self::registerScriptDirective();
     }
 
@@ -31,16 +32,36 @@ class BladekitDirectiveRegistrar
     }
 
     /**
-     * Register the @bladekitStyle directive.
+     * Register the @bladekitStyles directive.
      *
      * @return void
      */
-    protected static function registerStyleDirective()
+    protected static function registerStylesDirective()
     {
-        Blade::directive('bladekitStyle', function ($expression) {
-            return "<?php echo asset('assets/vendor/bladekit/css/' . trim($expression, '\"')); ?>";
+        Blade::directive('bladekitStyles', function ($expression) {
+
+            $resetCssPath = public_path('assets/vendor/bladekit/css/reset.css');
+            $indexCssPath = public_path('assets/vendor/bladekit/css/index.css');
+            $sassIndexCssPath = public_path('assets/vendor/bladekit/css/sass-index.css');
+
+            $links = '';
+
+            if (File::exists($resetCssPath)) {
+                $links .= '<link rel="stylesheet" href="'. asset('assets/vendor/bladekit/css/reset.css') .'">';
+            }
+
+            if (File::exists($indexCssPath)) {
+                $links .= '<link rel="stylesheet" href="'. asset('assets/vendor/bladekit/css/index.css') .'">';
+            }
+
+            if (File::exists($sassIndexCssPath)) {
+                $links .= '<link rel="stylesheet" href="'. asset('assets/vendor/bladekit/css/sass-index.css') .'">';
+            }
+
+            return $links;
         });
     }
+
 
     /**
      * Register the @bladekitScript directive.

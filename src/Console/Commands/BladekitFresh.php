@@ -3,7 +3,6 @@
 namespace Devinci\Bladekit\Console\Commands;
 
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Artisan;
 use Devinci\Bladekit\Services\BladekitAssetRegistrar;
 
 /**
