@@ -13,7 +13,7 @@
      */
 @endphp
 
-@bladekit::use('Illuminate\Support\Facades\Vite')
+@use('Illuminate\Support\Facades\Vite')
 
 <!DOCTYPE html>
 <html lang="en"
