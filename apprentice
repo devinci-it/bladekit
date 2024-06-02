@@ -2,21 +2,100 @@
 
 require_once __DIR__ . '/vendor/autoload.php';
 
+use Illuminate\Filesystem\Filesystem;
+use Devinci\Bladekit\Console\Console;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Console\Question\ChoiceQuestion;
-use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Question\Question;
+use Symfony\Component\Finder\Finder;
+
+class CLIHelper
+{
+    private $input;
+    private $output;
+    private $style;
+
+    private $util;
+
+    public function __construct(InputInterface $input, OutputInterface $output)
+    {
+        $this->input = $input;
+        $this->output = $output;
+        $this->util= new Console(new ConsoleOutput());
+
+        $this->style = new SymfonyStyle($input, $output);
+    }
+
+    public function ask($question, $default = null)
+    {
+        return $this->style->ask($question, $default);
+    }
+
+    public function selectOption($prompt, $choices)
+    {
+        echo "\n$prompt\n";
+        foreach ($choices as $index => $choice) {
+            echo "[$index] $choice\n";
+        }
+
+        echo "\nUse arrow keys to navigate and enter to select.\n";
+
+        $selectedIndex = 0;
+        while (true) {
+            echo "\033[H\033[J"; // Clear screen
+            echo "\n$prompt\n";
+            foreach ($choices as $index => $choice) {
+                if ($index == $selectedIndex) {
+                    echo "\033[32m⌗     $choice\033[0m\n"; // Green text for selected option
+                } else {
+                    echo "      $choice\n";
+                }
+            }
+
+            system('stty cbreak -echo');
+            $char = fgetc(STDIN);
+            system('stty -cbreak echo');
+
+            if ($char === "\033") {
+                fgetc(STDIN); // Skip the [
+                $arrow = fgetc(STDIN);
+                if ($arrow === 'A') { // Up arrow
+                    $selectedIndex = ($selectedIndex > 0) ? $selectedIndex - 1 : count($choices) - 1;
+                } elseif ($arrow === 'B') { // Down arrow
+                    $selectedIndex = ($selectedIndex < count($choices) - 1) ? $selectedIndex + 1 : 0;
+                }
+            } elseif ($char === "\n") {
+                break;
+            }
+        }
+
+        return $choices[$selectedIndex];
+    }
+
+    public function displayMessage($message)
+    {
+        $this->util->displayMessage($message);
+
+    }
+
+    public function displayBorder($message)
+    {
+        $this->style->section($message);
+    }
+
+    public function askQuestion(ChoiceQuestion $question)
+    {
+        return $this->style->askQuestion($question);
+    }
+}
 
 class ApprenticeApp extends Command
 {
-    const LOCKFILE = '.apprentice/task.lock';
-
-    private $style;
-
     protected function configure()
     {
         $this->setName('apprentice')
@@ -25,140 +104,244 @@ class ApprenticeApp extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->style = new SymfonyStyle($input, $output);
-        $this->style->title('Apprentice CLI');
-
-        // Check if lockfile exists
-        if (file_exists(self::LOCKFILE)) {
-            $this->style->warning('A task is already in progress. Please complete it before starting a new one.');
-            return Command::FAILURE;
-        }
-
-        // Create lockfile
-        file_put_contents(self::LOCKFILE, '');
-
-        // Main menu loop
-        while (true) {
-            $this->menu();
-
-            // Break the loop for now to prevent infinite loop
-            break;
-        }
-
-        // Remove lockfile upon push to origin main
-        $this->pushToMain();
-        $this->removeLockfile();
+        $cliHelper = new CLIHelper($input, $output);
+        $menuHandler = new MenuHandler($cliHelper);
+        $menuHandler->displayMainMenu();
 
         return Command::SUCCESS;
     }
+}
 
-    private function menu()
+class MenuHandler
+{
+    private $cliHelper;
+
+    public function __construct(CLIHelper $cliHelper)
     {
-        $choices = [
-            'Start a new task',
-            'Add files to git',
-            'Commit changes',
-            'Create a tag',
-            'Quit'
+        $this->cliHelper = $cliHelper;
+    }
+
+    public function displayMainMenu()
+    {
+        $this->cliHelper->displayBorder('Apprentice CLI');
+
+        $mainMenuChoices = [
+            '🤖 Start a new task',
+            '👾 Git Operations',
+            '🧩 Register Component',
+            '👻 Quit'
         ];
 
-        $action = $this->style->choice('Please select an action:', $choices);
+        while (true) {
+            $action = $this->cliHelper->selectOption('Please select an action:', $mainMenuChoices);
 
-        switch ($action) {
-            case 'Start a new task':
-                $this->startNewTask();
-                break;
-            case 'Add files to git':
-                $this->addFilesToGit();
-                break;
-            case 'Commit changes':
-                $this->commitChanges();
-                break;
-            case 'Create a tag':
-                $this->createTag();
-                break;
-            case 'Quit':
-                exit;
-                break;
+            switch ($action) {
+                case '🤖 Start a new task':
+                    TaskHandler::startNewTask($this->cliHelper);
+                    break;
+                case '👾 Git Operations':
+                    $this->displayGitOperationsMenu();
+                    break;
+                case '🧩 Register Component':
+                    $this->registerViewComponent();
+                    break;
+                case '👻 Quit':
+                    exit;
+            }
         }
     }
 
-    private function startNewTask()
+    private function displayGitOperationsMenu()
     {
-        $taskId = uniqid();
-        $this->style->section("Task ID: $taskId");
-
-        $task = $this->style->ask('Enter task/goal:');
-        $changelogFile = $this->style->ask('Enter changelog file:', 'CHANGELOG.md');
-        $commitMessage = $this->style->ask('Enter commit message:');
-        $versionType = $this->askVersionType();
-
-        // Record task details to changelog file
-        file_put_contents($changelogFile, "\n## [$versionType] - " . date('Y-m-d') . "\n- **$task**\n", FILE_APPEND);
-
-        // Commit changes
-        exec("git add $changelogFile");
-        exec("git commit -m \"$commitMessage\"");
-        $this->style->success('Changes committed successfully.');
-
-        // Save the task ID to the lockfile
-        file_put_contents(self::LOCKFILE, $taskId);
-    }
-
-    private function addFilesToGit()
-    {
-        $files = $this->style->ask('Enter files to add (comma-separated):');
-        $files = array_map('trim', explode(',', $files));
-
-        foreach ($files as $file) {
-            exec("git add $file");
-        }
-
-        $this->style->success('Files added to git.');
-    }
-
-    private function commitChanges()
-    {
-        $commitMessage = $this->style->ask('Enter commit message:');
-        exec("git commit -m \"$commitMessage\"");
-
-        $this->style->success('Changes committed successfully.');
-    }
-
-    private function createTag()
-    {
-        $tag = $this->style->ask('Enter tag name:');
-        exec("git tag $tag");
-
-        $this->style->success("Tag $tag created successfully.");
-    }
-
-    private function askVersionType()
-    {
-        $versionTypeChoices = [
-            'Bug fix',
-            'New feature',
-            'Major release'
+        $gitMenuChoices = [
+            '➕ Add files to git',
+            '✅ Commit changes',
+            '🏷️ Create a tag',
+            '🔙 Back to main menu'
         ];
 
-        $versionType = $this->style->choice('Select the version type:', $versionTypeChoices);
+        while (true) {
+            $action = $this->cliHelper->selectOption('Git Operations:', $gitMenuChoices);
 
-        return $versionType;
-    }
-
-    private function pushToMain()
-    {
-        $this->style->writeln('Pushing changes to origin main...');
-        exec('git push origin main');
-        $this->style->success('Changes pushed successfully!');
-    }
-
-    private function removeLockfile()
-    {
-        if (file_exists(self::LOCKFILE)) {
-            unlink(self::LOCKFILE);
-            $this->style->success('Lockfile removed.');
+            switch ($action) {
+                case '➕ Add files to git':
+                    GitHandler::addFilesToGit($this->cliHelper);
+                    break;
+                case '✅ Commit changes':
+                    GitHandler::commitChanges($this->cliHelper);
+                    break;
+                case '🏷️ Create a tag':
+                    GitHandler::createTag($this->cliHelper);
+                    break;
+                case '🔙 Back to main menu':
+                    return;
+            }
         }
+    }
+
+    private function registerViewComponent()
+    {
+        $componentHandler = new ComponentHandler($this->cliHelper);
+        $componentHandler->registerViewComponent();
+    }
+}
+
+class TaskHandler
+{
+    public static function startNewTask(CLIHelper $cliHelper)
+    {
+        $cliHelper->displayMessage("Starting a new task...");
+    }
+}
+
+class GitHandler {
+    public static function addFilesToGit(CLIHelper $cliHelper)
+    {
+        $cliHelper->displayMessage("Adding files to git...");
+    }
+
+    public static function commitChanges(CLIHelper $cliHelper){
+        $cliHelper->displayMessage("Committing changes...");
+    }
+
+    public static function createTag(CLIHelper $cliHelper)
+    {
+        $cliHelper->displayMessage("Creating a tag...");
+    }
+}
+
+class ComponentHandler
+{
+    private $cliHelper;
+    private $filesystem;
+
+    public function __construct(CLIHelper $cliHelper)
+    {
+        $this->cliHelper = $cliHelper;
+        $this->filesystem = new Filesystem();
+    }
+
+    public function registerViewComponent()
+    {
+        while (true) {
+            $classNameSpace = $this->getNamespace();
+            if ($classNameSpace === '🔙 Back to menu') {
+                return;
+            }
+
+            $this->cliHelper->displayBorder('Registering a new view component');
+            $this->cliHelper->displayMessage('This command will guide you through the process of registering a new view component.');
+
+            $componentName = $this->cliHelper->ask('Enter the name of the view component:');
+            $fqnamespace = "Devinci\\Bladekit\\View\\" . $classNameSpace . "\\" . $componentName;
+
+            $basePath = 'src';
+            $mappedNamespace = 'Devinci\\Bladekit\\View\\' . $classNameSpace;
+            $srcPath = $this->convertToPath($mappedNamespace);
+            $this->makeDirectory($srcPath);
+            $this->createViewComponent($componentName, $mappedNamespace, $srcPath);
+        }
+    }
+
+    private function makeDirectory($path)
+    {
+        if (!file_exists($path)) {
+            mkdir($path, 0755, true);
+        }
+        $this->cliHelper->displayMessage("Directory created successfully: " . $path);
+    }
+
+    private function convertToPath($namespace)
+    {
+        $namespace = str_replace("Devinci\\Bladekit\\", "src/", $namespace);
+        return str_replace('\\', '/', $namespace);
+    }
+
+    private function getNamespace()
+    {
+        $finder = new Finder();
+        $finder->directories()->in('src/View')->depth('== 0');
+
+        $directories = [];
+        foreach ($finder as $dir) {
+            $directories[] = $dir->getRelativePathname();
+        }
+
+        $directories[] = 'Create a new namespace';
+        $directories[] = '🔙 Back to menu';
+
+        $prompt = 'Select the namespace for the view component or enter a new one [Devinci\Bladekit\View\]:';
+        $selected = 0;
+
+        while (true) {
+            echo "\033[H\033[J"; // Clear screen
+
+            // Display prompt and choices
+            $this->cliHelper->displayMessage( "\n\033[1m$prompt\033[0m\n",'info');
+
+            foreach ($directories as $index => $choice) {
+                if ($index === $selected) {
+                    echo "\033[32m  |$choice\033[0m\n"; // Green for selected item
+                } else {
+                    echo "  $choice\n";
+                }
+            }
+
+            // Read user input
+            system('stty cbreak -echo');
+            $char = ord(fgetc(STDIN));
+            system('stty -cbreak echo');
+
+            if ($char === 27) { // ANSI escape sequence
+                $char = ord(fgetc(STDIN));
+                if ($char === 91) { // Arrow keys
+                    $char = ord(fgetc(STDIN));
+                    if ($char === 65) { // Up arrow
+                        $selected = ($selected > 0) ? $selected - 1 : count($directories) - 1;
+                    } elseif ($char === 66) { // Down arrow
+                        $selected = ($selected < count($directories) - 1) ? $selected + 1 : 0;
+                    }
+                }
+            } elseif ($char === 10) { // Enter key
+                break;
+            }
+        }
+
+        $selectedChoice = $directories[$selected];
+
+        if ($selectedChoice === 'Create a new namespace') {
+            $namespace = $this->cliHelper->ask('Enter the new namespace:');
+        } else {
+            $namespace = $selectedChoice;
+        }
+
+        return $namespace;
+    }
+
+    private function createViewComponent($componentName, $namespace, $srcPath)
+    {
+        $directory = str_replace('\\', '/', $namespace);
+        $directory = str_replace("devinci/bladekit/view/", '', strtolower($directory));
+
+        $lastSlashPos = strrpos(strtolower($directory), '/');
+        $nesting = substr($directory, 0, $lastSlashPos);
+        $path = ("resources/views/{$nesting}");
+        if (!$this->filesystem->isDirectory($path)) {
+            $this->filesystem->makeDirectory($path, 0755, true);
+        }
+
+        $bladeViewPath = $path . "/{$componentName}.blade.php";
+        if (!file_exists($bladeViewPath)) {
+            $bladeStub = $this->filesystem->get(__DIR__ . '/stubs/blade.stub');
+            $bladeStub = str_replace('{{componentName}}', $componentName, $bladeStub);
+            $this->filesystem->put($bladeViewPath, $bladeStub);
+        }
+
+        $componentClassPath = $srcPath . "/" . ucwords($componentName) . ".php";
+        $componentStub = $this->filesystem->get(__DIR__ . '/stubs/component.stub');
+        $componentStub = str_replace('{{namespace}}', $namespace, $componentStub);
+        $componentStub = str_replace('{{componentName}}', $componentName, $componentStub);
+        $this->filesystem->put($componentClassPath, $componentStub);
     }
 }
 

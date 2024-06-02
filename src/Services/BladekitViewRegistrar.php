@@ -1,27 +1,26 @@
 <?php
-/*src/Services/BladekitViewRegistrar.php*/
 
 namespace Devinci\Bladekit\Services;
 
+use Devinci\Bladekit\View\Components\Stack\AnchorRow;
+use Devinci\Bladekit\View\Components\Stack\ToggleSwitch;
+use Devinci\Bladekit\View\Layouts\App;
+use Devinci\Bladekit\View\Widgets\PageHeader;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\View;
-use Symfony\Component\Yaml\Yaml;
-
 
 class BladekitViewRegistrar
 {
-    protected $yamlFilePath;
     protected $config;
 
     /**
-     * Create a new class instance.
+     * Create a new instance of BladekitViewRegistrar.
      *
-     * @return void
+     * @param array $config
      */
-    public function __construct()
+    public function __construct(array $config)
     {
-        $this->yamlFilePath = config('bladekit.yaml_file_path');
-        $this->config = config('bladekit');
+        $this->config = $config;
     }
 
     /**
@@ -31,9 +30,17 @@ class BladekitViewRegistrar
      */
     public function register()
     {
+        Blade::component('bladekit-widgets::page-header', PageHeader::class);
+        Blade::component('bladekit-layouts::app', App::class);
+        Blade::component('bladekit::stack.toggle-switch', ToggleSwitch::class);
+
+        Blade::component('bladekit::stack.anchor-row',  AnchorRow::class);
+
+        View::addNamespace('bladekit-widgets', base_path(__DIR__.'../resources/views/widgets'));
+        View::addNamespace('bladekit-layouts', base_path(__DIR__.'../resources/views/layouts'));
+
         $this->registerViews();
-        $this->registerAnonymousComponentPaths();
-        $this->registerComponentNamespaces();
+//        $this->registerComponentNamespaces();
     }
 
     /**
@@ -78,50 +85,16 @@ class BladekitViewRegistrar
         View::addNamespace('bladekit', $path);
     }
 
-
     /**
-     * Register anonymous component paths.
-     *
-     * @return void
-     */
-    protected function registerAnonymousComponentPaths()
-    {
-        $configPaths = $this->config['anonymous_component_paths'] ?? [];
-
-        foreach ($configPaths as $path) {
-            Blade::anonymousComponentPath($path, 'bladekit');
-        }
-
-        $this->writeToYaml('anonymous_component_paths', $configPaths);
-    }
-
-    /**
-     * Register component namespaces.
+     * Register additional component namespaces.
      *
      * @return void
      */
     protected function registerComponentNamespaces()
     {
         $namespaces = $this->config['component_namespaces'] ?? [];
-
         foreach ($namespaces as $prefix => $namespace) {
             Blade::componentNamespace($namespace, $prefix);
         }
-
-        $this->writeToYaml('component_namespaces', $namespaces);
-    }
-
-    /**
-     * Write data to YAML file.
-     *
-     * @param string $key
-     * @param array $data
-     * @return void
-     */
-    protected function writeToYaml($key, $data)
-    {
-        $yamlData = Yaml::dump([$key => $data], 4, 2);
-
-        file_put_contents($this->yamlFilePath, $yamlData, FILE_APPEND);
     }
 }

@@ -207,12 +207,20 @@ Bladekit also includes images that can be used within your components.
 ```plaintext
 resources/
 ├── js
+<<<<<<< Updated upstream
 │   ├── bladekit.js
+=======
+│   ├── app.js
+>>>>>>> Stashed changes
 │   ├── bootstrap.js
 │   └── vendor
 │       └── devinci-it
 │           └── bladekit
+<<<<<<< Updated upstream
 │               ├── bladekit.js
+=======
+│               ├── app.js
+>>>>>>> Stashed changes
 │               └── bootstrap.js
 ```
 

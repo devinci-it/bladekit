@@ -1,5 +1,12 @@
 <?php
 
+include_once ('vendor/autoload.php');
+use Illuminate\Support\Facades\Artisan;
+
+
+Artisan::call('make:class -h');
+
+
 // Define Bladekit color theme
 $primaryColor = "\033[38;5;74m"; // Green
 $accentColor = "\033[38;5;208m"; // Yellow

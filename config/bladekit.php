@@ -38,6 +38,8 @@ return [
     */
     'anonymous_component_paths' => [
         __DIR__ . '/../resources/views/components',
+        __DIR__ . '/../resources/views/layouts',
+        __DIR__ . '/../resources/views/widgets',
 
     ],
 
@@ -48,8 +50,8 @@ return [
     */
     'component_namespaces' => [
         'bladekit' => 'Devinci\\Bladekit\\View\\Components',
-        'bladekit-layout' => 'Devinci\\Bladekit\\View\\Layout\\',
-
+        'bladekit-layouts' => 'Devinci\\Bladekit\\View\\Layouts',
+        'bladekit-widgets' => 'Devinci\\Bladekit\\View\\Widgets\\',
     ],
 
     /*
@@ -58,7 +60,7 @@ return [
     |--------------------------------------------------------------------------
     */
     'view_paths' => [
-            __DIR__ . '/../resources/views',
+        __DIR__ . '/../resources/views',
         ],
 
     /*

@@ -18,6 +18,7 @@ class DirectiveRegistry
         self::registerBladekitStylesDirective();
         self::registerBladekitScriptsDirective();
         self::registerBladekitAssetDirective();
+
     }
 
     /**

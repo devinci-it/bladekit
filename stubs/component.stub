@@ -1,28 +1,13 @@
 <?php
 
-namespace Devinci\Bladekit\Components;
+namespace {{namespace}};
 
 use Illuminate\View\Component;
 
-class {{className}} extends Component
+class {{componentName}} extends Component
 {
-@foreach($props as $prop => $description)
-    /**
-     * {{ $description }}
-     *
-     * @var mixed
-     */
-@endforeach
-    public $props;
-
-    public function __construct($props = [])
-    {
-        $this->props = $props;
-    }
-
     public function render()
     {
-        return view('bladekit::components.'.$viewName);
+        return view('components.{{namespaceLowerCase}}.{{componentNameLowerCase}}');
     }
 }
-

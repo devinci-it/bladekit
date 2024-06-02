@@ -44,19 +44,49 @@ class Console
                 $message .= ':';
                 break;
             default:
-                $symbol = '﹅';
+                $icon= '🚀';
                 $style = 'default';
                 $color = 'white';
                 break;
         }
 
-        $formattedMessage = sprintf('<fg=%s>%s %s</>', $color, $symbol, $message);
+        $formattedMessage = sprintf('<fg=%s> %s %s</>' , $color,$icon, $message);
         if ($highlight) {
             $formattedMessage = sprintf('<options=bold>%s</>', $formattedMessage);
         }
 
-        $this->output->writeln($formattedMessage);
+        $this->displayMessageWithBorder($formattedMessage);
+
+
     }
+    public function displayMessageWithBorder(string $body, string $header = null, string $subHeader = null)
+    {
+        $border = str_repeat('-', 120); // Adjust the number as needed
+
+        // Display the border
+        $this->output->writeln($border);
+
+        // Display the header if it's provided
+        if ($header !== null) {
+            $this->output->writeln('* ' . $header);
+            $this->output->writeln($border);
+        }
+
+        // Display the body
+        $this->output->writeln('* ' . $body);
+
+        // Display the sub-header if it's provided
+        if ($subHeader !== null) {
+            $this->output->writeln($border);
+            $this->output->writeln('* ' . $subHeader);
+        }
+
+        // Display the border
+        $this->output->writeln($border);
+    }
+
+
+
 
     public function displayHeader(string $message)
     {
@@ -77,10 +107,14 @@ class Console
 
     public function displayBorder(string $message, string $character = '-')
     {
-        $this->output->writeln(sprintf('<fg=blue>%s</>', str_repeat($character, strlen($message) + 4)));
-        $this->output->writeln(sprintf('<fg=blue>%s %s %s</>', $character, $message, $character));
-        $this->output->writeln(sprintf('<fg=blue>%s</>', str_repeat($character, strlen($message) + 4)));
+        $paddedMessage = str_pad($message, 200, "     ", STR_PAD_BOTH);
+
+        $this->output->writeln(sprintf('<fg=blue>%s</>', str_repeat($character, 120-strlen($message)  )));
+        $this->output->writeln(sprintf('<fg=bright-blue>%s %s %s</>', $character, $paddedMessage, $character));
+        $this->output->writeln(sprintf('<fg=blue>%s</>', str_repeat($character, 120-strlen($message))));
     }
+
+
 
     public function displayEmptyLine(int $count = 1)
     {
