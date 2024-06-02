@@ -47,3 +47,66 @@ Added usage instructions and example code snippets in the comments for better un
 - Views 
   - Components Devinci\Bladekit\Layout\App , Devinci\Bladekit\Layout\Grid
   - Layouts : 'bladekit::layouts.app' , 'bladekit::layouts.grid'
+## Added
+
+
+## Modified
+resources/views/layouts/flex.blade.php, src/View/Layouts/Flex.php, 
+
+## Removed
+
+
+## Added
+resources/views/components/button.blade.php, resources/views/components/stack/anchor-row.blade.php, resources/views/components/stack/toggle-switch.blade.php, resources/views/widgets/page-header.blade.php, src/Console/Commands/DevKit/ListComponents.php, src/View/Components/Button.php, src/View/Components/Stack/AnchorRow.php, src/View/Layouts/Interstitial.php, src/View/Widgets/PageHeader.php, 
+
+## Modified
+resources/css/app.css, resources/css/form.css, resources/views/layouts/app.blade.php, resources/views/layouts/grid.blade.php, resources/views/layouts/interstitial.blade.php, resources/views/welcome.blade.php, src/View/Layouts/App.php, src/View/Layouts/Flex.php, 
+
+## Removed
+resources/views/components/widgets/toggle-switch.blade.php, 
+
+## Added
+
+
+## Modified
+
+
+## Removed
+
+
+## Added
+resources/views/Modal.blade.php, resources/views/layouts/Wide.blade.php, resources/views/widgets/Modal.blade.php, src/Apprentice/ComponentHandler.php, src/Console/Commands/DevKit/RegisterView.php, stubs/blade.stub, 
+
+## Modified
+apprentice, config/bladekit.php, docs/index.md, icon.svg, post-install.php, resources/views/components/app.blade.php, src/Console/Commands/DevKit/ListComponents.php, src/Console/Console.php, src/DirectiveRegistry.php, src/Services/BladekitViewRegistrar.php, stubs/component.stub, 
+
+## Removed
+
+
+## Added
+
+
+## Modified
+
+
+## Removed
+
+
+## Added
+
+
+## Modified
+.gitignore, 
+
+## Removed
+
+
+## Added
+
+
+## Modified
+
+
+## Removed
+
+
