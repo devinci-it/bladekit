@@ -1,6 +1,6 @@
 @php
     /**
-     * Blade Component: Page Header
+     * Blade Component: Page Header.php
      *
      * This component renders a header for a web page.
      * It accepts props for the section header, pre-text, section sub-header,

@@ -1,27 +1,28 @@
-{{-- resources/views/layouts/flex.blade.php --}}
-
-<div class="{{ $containerClass }} p3 my2" style="display: flex; flex-wrap: {{ $wrap ?? 'wrap' }};">
-    @for ($i = 1; $i <= ($gridTemplate ? substr_count($gridTemplate, ' ') + 1 : $columns); $i++)
-        <div class="{{ $columnClass }} my3" style="flex: {{ isset($maxCol) ? '1 0 ' . (100 / $maxCol) . '%' : '1' }};
-            @if (isset($maxRow))
-                max-width: {{ isset($maxCol) ? 'calc(' . (100 / $maxCol) . '% - ' . $gap . ')' : '100%' }};
-                @if ($i > $maxRow)
-                    display: none;
-                @endif
-            @endif
-            ">
-            @if (isset(${'slot' . $i}))
-                {{ ${'slot' . $i} }}
-            @else
-                <!-- Render empty state component or leave blank -->
-                <x-empty-state />
-            @endif
-        </div>
-    @endfor
-</div>
-
 @push('styles')
     <style>
-        /* No additional styles needed since flexbox properties are applied inline */
+        .flex-container {
+            display: flex;
+        }
+
+        .flex-container.wrap {
+            flex-wrap: wrap;
+        }
+
+        .flex-container.scroll-snap {
+            scroll-snap-type: x mandatory; /* Change 'x' to 'y' for vertical snapping */
+        }
+
+        .flex-container.scroll-snap > * {
+            scroll-snap-align: start;
+        }
     </style>
 @endpush
+
+<div class="flex-container {{ $containerClass }} {{ $scroll === 'auto' ? 'wrap' : 'scroll-snap' }}"
+     style="flex-direction: {{ $direction === 'horizontal' ? 'row' : 'column' }}; 
+            overflow-{{ $direction === 'horizontal' ? 'x' : 'y' }}: {{ $scroll === 'auto' ? 'auto' : 'scroll' }};">
+    {{ $slot }}
+
+</div>
+
+

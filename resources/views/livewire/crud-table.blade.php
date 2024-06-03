@@ -67,7 +67,7 @@
             font-family: 'HubotSans', sans-serif;
         }
 
-        /* Table Header */
+        /* Table Header.php */
         .minimal-table thead {
             background-color: #f9f9f9;
             color: #333;

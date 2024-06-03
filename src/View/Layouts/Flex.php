@@ -1,5 +1,4 @@
 <?php
-
 namespace Devinci\Bladekit\View\Layouts;
 
 use Illuminate\View\Component;
@@ -7,44 +6,24 @@ use Illuminate\View\Component;
 class Flex extends Component
 {
     public $containerClass;
-    public $wrap;
-    public $gridTemplate;
-    public $columns;
-    public $maxCol;
-    public $maxRow;
-    public $gap;
-    public $columnClass;
+    public $direction;
+    public $scroll;
 
     /**
      * Create a new component instance.
      *
      * @param string $containerClass
-     * @param string $wrap
-     * @param string $gridTemplate
-     * @param int $columns
-     * @param int|null $maxCol
-     * @param int|null $maxRow
-     * @param string|null $gap
-     * @param string|null $columnClass
+     * @param string $direction
+     * @param string $scroll
      */
     public function __construct(
         $containerClass = '',
-        $wrap = 'wrap',
-        $gridTemplate = '',
-        $columns = 1,
-        $maxCol = null,
-        $maxRow = null,
-        $gap = null,
-        $columnClass = ''
+        $direction = 'horizontal',
+        $scroll = 'auto'
     ) {
         $this->containerClass = $containerClass;
-        $this->wrap = $wrap;
-        $this->gridTemplate = $gridTemplate;
-        $this->columns = $columns;
-        $this->maxCol = $maxCol;
-        $this->maxRow = $maxRow;
-        $this->gap = $gap;
-        $this->columnClass = $columnClass;
+        $this->direction = $direction;
+        $this->scroll = $scroll;
     }
 
     /**
@@ -54,6 +33,6 @@ class Flex extends Component
      */
     public function render()
     {
-        return view('bladekit-layouts::flex');
+        return view('bladekit::layouts.flex');
     }
 }

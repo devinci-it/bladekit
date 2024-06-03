@@ -2,24 +2,24 @@
 @props(['name'=>''])
 
 @php
-/**
-      * Modal component.
-      *
-      * This component creates a modal overlay with customizable content.
-      * It accepts a 'name' parameter to differentiate between multiple instances.
-      *
-      * Usage:
-      * ```
-      * <x-modal name="uniqueName">
-      *     <x-slot name="title">
-      *         Modal Title
-      *     </x-slot>
-      *     <p>This is the content of the modal.</p>
-      * </x-modal>
-      * ```
-      *
-      * @param {string} name - The unique identifier for the modal instance.
-      */
+    /**
+          * Modal component.
+          *
+          * This component creates a modal overlay with customizable content.
+          * It accepts a 'name' parameter to differentiate between multiple instances.
+          *
+          * Usage:
+          * ```
+          * <x-modal name="uniqueName">
+          *     <x-slot name="title">
+          *         Modal Title
+          *     </x-slot>
+          *     <p>This is the content of the modal.</p>
+          * </x-modal>
+          * ```
+          *
+          * @param {string} name - The unique identifier for the modal instance.
+          */
 @endphp
 
 <div class="modal-overlay" id="modalOverlay_{{ $name }}" style="display: none;">
