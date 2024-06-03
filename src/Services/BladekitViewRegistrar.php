@@ -5,7 +5,13 @@ namespace Devinci\Bladekit\Services;
 use Devinci\Bladekit\View\Components\Stack\AnchorRow;
 use Devinci\Bladekit\View\Components\Stack\ToggleSwitch;
 use Devinci\Bladekit\View\Layouts\App;
+use Devinci\Bladekit\View\Layouts\Grid;
+use Devinci\Bladekit\View\Layouts\Flex;
+use Devinci\Bladekit\View\Layouts\Interstitial;
+
 use Devinci\Bladekit\View\Widgets\PageHeader;
+
+
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\View;
 
@@ -30,14 +36,21 @@ class BladekitViewRegistrar
      */
     public function register()
     {
+
+        View::addNamespace('bladekit-widgets', base_path(__DIR__.'/../../resources/views/widgets'));
+        View::addNamespace('bladekit-layouts', base_path(__DIR__.'/../../resources/views/layouts'));
+
         Blade::component('bladekit-widgets::page-header', PageHeader::class);
+
+
         Blade::component('bladekit-layouts::app', App::class);
+        Blade::component('bladekit-layouts::grid', Grid::class);
+        Blade::component('bladekit-layouts::flex',Flex::class);
+
         Blade::component('bladekit::stack.toggle-switch', ToggleSwitch::class);
-
+        Blade::component('bladekit::stack.toggle-switch', ToggleSwitch::class);
+        Blade::component('bladekit::stack.toggle-switch', ToggleSwitch::class);
         Blade::component('bladekit::stack.anchor-row',  AnchorRow::class);
-
-        View::addNamespace('bladekit-widgets', base_path(__DIR__.'../resources/views/widgets'));
-        View::addNamespace('bladekit-layouts', base_path(__DIR__.'../resources/views/layouts'));
 
         $this->registerViews();
 //        $this->registerComponentNamespaces();

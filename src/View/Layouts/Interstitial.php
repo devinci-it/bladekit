@@ -44,6 +44,6 @@ class Interstitial extends Component
 
     public function render()
     {
-        return view('bladekit::layouts.interstitial');
+        return view('bladekit-layouts::interstitial');
     }
 }

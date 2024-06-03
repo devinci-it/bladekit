@@ -30,7 +30,7 @@ class BladekitServiceProvider extends ServiceProvider
         $this->registerConfig();
         $this->devMode = config('bladekit.dev_mode');
         $this->commandRegistrar = new BladekitCommandRegistrar($this->devMode);
-        $this->viewRegistrar= new BladekitViewRegistrar();
+        $this->viewRegistrar= new BladekitViewRegistrar(config('bladekit'));
 
     }
 

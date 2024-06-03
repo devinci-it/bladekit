@@ -19,6 +19,6 @@ class App extends Component
      */
     public function render()
     {
-        return view('bladekit-layouts::app');
+        return view('bladekit::layouts.app');
     }
 }
