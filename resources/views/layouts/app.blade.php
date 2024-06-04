@@ -16,30 +16,35 @@
 @use('Illuminate\Support\Facades\Vite')
 
 <!DOCTYPE html>
-<html lang="en"
-    @include('bladekit::partials.header')
+    <html lang="en" xmlns:x-bladekit-partials="http://www.w3.org/1999/html"/>
+
+    <x-bladekit-partials::header/>
+
     <body>
 
-    <div class="container">
+        <div class="container">
 
-        <aside>
-            @yield('sidebar')
-        </aside>
+            <aside>
+                @yield('sidebar')
+            </aside>
 
-        <main class="full p3 m3">
+            <main class="full p3 m3">
 
-            @yield('content')
+                @yield('content')
 
-        </main>
-    </div>
+            </main>
+        </div>
 
-    <!-- Add your JavaScript links here -->
+        <!-- Add your JavaScript links here -->
 
 
-    @stack('scripts')
-    @stack('styles')
+        @stack('scripts')
+        @stack('styles')
 
-    </body>
-    @include('bladekit::partials.footer')
+        </body>
+
+
+
+        <x-bladekit-partials::footer/>
 
 </html>

@@ -19,7 +19,7 @@ class Header extends Component
 
     public function render()
     {
-        return view('bladekit::partials-header');
+        return view('bladekit::partials.header');
     }
 
 }

@@ -345,7 +345,7 @@ input.specialized-input.input.form-input {
 }
 /* Track */
 ::-webkit-scrollbar {
-    width: 3px; /* width of the entire scrollbar */
+    width: .3px; /* width of the entire scrollbar */
 }
 
 /* Handle */

@@ -110,4 +110,35 @@ return [
         // Add any additional logger configurations here
     ],
 
-];
+    /*---------------------------------------------------------------------
+     *
+     *  View\Partials\Footer configuration values.
+     * --------------------------------------------------------------------
+     */
+    
+    'footer'=>[
+        'footer_social_links' => [
+            'facebook' => 'https://www.facebook.com/example',
+            'twitter' => 'https://www.twitter.com/example',
+            'instagram' => 'https://www.instagram.com/example',
+        ],
+
+        'footer_links' => [
+            [
+                'title' => 'About Us',
+                'url' => '/about',
+            ],
+            [
+                'title' => 'Services',
+                'url' => '/services',
+            ],
+            [
+                'title' => 'Contact',
+                'url' => '/contact',
+            ]
+
+        ],
+                'footer_logo' => '/images/logo.png' ]
+    ];
+
+

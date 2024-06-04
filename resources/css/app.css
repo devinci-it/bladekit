@@ -329,7 +329,7 @@ p.caption-text.mt0 {
 
 /* For webkit browsers */
 ::-webkit-scrollbar {
-    width: 3px; /* width of the scrollbar */
+    width: 1px; /* width of the scrollbar */
 }
 
 /* Track */
@@ -340,7 +340,7 @@ p.caption-text.mt0 {
 /* Handle */
 ::-webkit-scrollbar-thumb {
     background: rgba(0, 0, 0, 0.3); /* color of the scrollbar handle */
-    border-radius: 5px; /* rounded corners */
+    border-radius: 2px; /* rounded corners */
 }
 
 /* Handle on hover */

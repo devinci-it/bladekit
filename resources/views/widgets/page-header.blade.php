@@ -9,7 +9,7 @@
 
     $preTextSize = $scale * 0.9;
     $sectionHeaderSize = $scale * 2.2;
-    $sectionSubHeaderSize = $scale * 1.2;
+    $sectionSubHeaderSize = $scale * 1.0;
 @endphp
 
 <div class="pb-5 mb-20">

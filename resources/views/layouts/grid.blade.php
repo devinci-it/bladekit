@@ -1,4 +1,4 @@
-<div class="{{ $containerClass }} p3 my2" style="gap: 20px;">
+<div class="{{ $containerClass }} p3 my2" style="gap: {{$gap}};">
     @for ($i = 1; $i <= ($gridTemplate ? substr_count($gridTemplate, ' ') + 1 : $columns); $i++)
         <div class="col col-{{ $i }} {{ $columnClass }} my3">
             @if (isset(${'slot' . $i}))
