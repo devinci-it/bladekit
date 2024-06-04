@@ -1,6 +1,6 @@
 <?php
 
-namespace Devinci\Bladekit\Services;
+namespace Devinci\Bladekit\Registrars;
 
 
 use Devinci\Bladekit\View\Components\Stack\AnchorRow;

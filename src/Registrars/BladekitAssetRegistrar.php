@@ -1,5 +1,5 @@
 <?php
-namespace Devinci\Bladekit\Services;
+namespace Devinci\Bladekit\Registrars;
 
 use Illuminate\Support\Facades\Artisan;
 use Devinci\Bladekit\Console\Commands\CompileSass;

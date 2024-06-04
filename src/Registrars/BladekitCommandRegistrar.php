@@ -1,6 +1,6 @@
 <?php
 
-namespace Devinci\Bladekit\Services;
+namespace Devinci\Bladekit\Registrars;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
