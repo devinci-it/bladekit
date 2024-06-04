@@ -273,7 +273,7 @@
                 @endphp
                 @livewire('search-bar', ['model' => \App\Models\Product::class, 'searchColumns' => ['name',
                 'description']])
-                {{--                <x-search-bar :model="\App\Models\Product::class" :searchColumns="['name', 'description']" />--}}
+                {{--                <x-search-bar :model="\BladeLayout\Models\Product::class" :searchColumns="['name', 'description']" />--}}
                 @if(request()->has('query') && request('query') != '')
                     @dd($results)
 

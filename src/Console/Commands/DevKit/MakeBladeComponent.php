@@ -59,7 +59,7 @@ class MakeBladeComponent extends Command
         $stub = file_get_contents(__DIR__.'/../../../../stubs/component.stub');
         $stub = str_replace('{{className}}', $className, $stub);
 
-        $componentPath = app_path("View/Components/{$className}.php");
+        $componentPath = app_path("Views/Components/{$className}.php");
         file_put_contents($componentPath, $stub);
     }
 

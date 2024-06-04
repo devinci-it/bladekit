@@ -1,8 +1,12 @@
-@props(['code' => [], 'theme', 'commentCharacter'=>$commentChar, 'isNumbered'=>$isNumbered])
+@props(['code' => [], 'theme', 'commentChar'=>$commentChar, 'isNumbered'=>$isNumbered])
 
         @php
         $isNumbered ?? $lineNumbers = implode("\n", range(1, count($code))) ;
         $lineNumbers = '';
+        $commentChar = $commentChar ?? '#';
+        $debug_result =[]
+
+
 
 //            $lineNumbers = implode("\n", range(1, count($code)));
         @endphp
@@ -16,21 +20,26 @@
 
 
 
-        <code class="code-content" @if($lineNumbers != '') data-line-numbers="{{ htmlspecialchars($lineNumbers) }}" @endif>
-        @foreach ($code as $index => $line)
+        <div class="code-content" @if($lineNumbers != '') data-line-numbers="{{ htmlspecialchars($lineNumbers) }}" @endif>
+
+        @foreach ($code as  $line)
             @php
                 // Determine if the line starts with a shebang or the specified comment character
-                $isShebang = str_starts_with($line, '#!');
-                $isComment = strpos($line, $commentCharacter) === 0;
+                $isShebang = str_starts_with(ltrim($line), '#!');
+                $isComment = str_starts_with(ltrim($line), $commentChar);
 
                 // Determine if the line should have a lighter color
                 $lighterLine = $isShebang || $isComment;
+
             @endphp
-            <pre class="code-line{{ $lighterLine ? ' light' : '' }}" data-line-number="{{ $index + 1 }}">
-             <span  class="code-line{{ $lighterLine ? ' light' : '' }}" >  {{ htmlspecialchars($line) }}</span>
+
+                <pre class="code-content line-numbers language-php" @if($isNumbered) data-line-numbers="{{ htmlspecialchars($lineNumbers) }}" @endif>
+             <code  class="inline-code code-line {{ $lighterLine ? ' light-text comment' : '' }}" >  {{ htmlspecialchars($line) }}</code>
             </pre>
         @endforeach
-    </code>
+
+
+    </div>
 
 
         @isset($footer)
@@ -53,13 +62,14 @@
 @push('styles')
     <style>
         /* Customizable colors */
+
         :root {
             --main-bg-color-light: #f8f9fa; /* Light theme background color */
             --main-bg-color-dark: #2d2d2d; /* Dark theme background color */
             --accent-color: #007bff; /* Accent color */
             --button-bg-color: rgba(200, 221, 245, 0.57); /* Button background color */
             --border-color: #6c757d; /* Border color */
-            --text-color: #000000; /* Text color */
+            --text-color: #20242e;/* Text color */
         }
 
         /* Common styles for light and dark themes */
@@ -126,33 +136,45 @@
             left: 0;
             top: 0;
             padding-right: 10px;
+            font-weight: 500;
             text-align: right;
             user-select: none;
             white-space: pre;
-            color: var(--border-color);
+            color: rgb(208, 215, 222);
         }
 
         /* Light theme specific styles */
         .code-snippet.light {
-            background-color: var(--main-bg-color-light);
+            background-color: var(--main-bg-color-light) !important;
             color: var(--text-color);
         }
 
         /* Dark theme specific styles */
         .code-snippet.dark {
-            background-color: var(--main-bg-color-dark);
+            background-color: var(--main-bg-color-dark) !important;
+        }
+        .dark code.code-line{
             color: #f8f8f2; /* Adjust text color for dark theme */
+
         }
 
         .code-snippet .header, .code-snippet .footer {
             color: rgb(141, 150, 160);
-            font-family: monospace;
+            font-family: var(--code-font-family);
             letter-spacing: 1px;
             line-height: .5;
             letter-spacing: normal;
             padding-top: 23px;
             border-top: solid 1px var(--border-color);
         }
+        .light-text{
+            color: var(--border-color)!important;
+        }
+
+        .comment{
+            color: rgba(200, 221, 245, 0.54);
+        }
+
 
     </style>
 @endpush

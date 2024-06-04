@@ -8,10 +8,11 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Blade;
 
 
-use Devinci\Bladekit\Services\BladekitAssetRegistrar;
-use Devinci\Bladekit\Services\BladekitCommandRegistrar;
-use Devinci\Bladekit\Services\BladekitDirectiveRegistrar;
-use Devinci\Bladekit\Services\BladekitViewRegistrar;
+use Devinci\Bladekit\Registrars\BladekitAssetRegistrar;
+use Devinci\Bladekit\Registrars\BladekitCommandRegistrar;
+use Devinci\Bladekit\Registrars\BladekitDirectiveRegistrar;
+use Devinci\Bladekit\Registrars\BladekitViewRegistrar;
+
 class BladekitServiceProvider extends ServiceProvider
 {
     protected $commandRegistrar;
@@ -30,7 +31,9 @@ class BladekitServiceProvider extends ServiceProvider
         $this->registerConfig();
         $this->devMode = config('bladekit.dev_mode');
         $this->commandRegistrar = new BladekitCommandRegistrar($this->devMode);
+
         $this->viewRegistrar= new BladekitViewRegistrar(config('bladekit'));
+//        $this->loadViewsFrom(__DIR__.'/../resources/views', 'bladekit');
 
     }
 
@@ -42,6 +45,13 @@ class BladekitServiceProvider extends ServiceProvider
     public function register()
     {
         $this->loadConfigurationFiles();
+        $this->viewRegistrar->register();
+
+
+
+        $this->loadViewsFrom(__DIR__.'/../resources/views', 'bladekit');
+
+
     }
 
     /**
@@ -57,8 +67,31 @@ class BladekitServiceProvider extends ServiceProvider
         $this->registerComponents();
         $this->registerView();
 
+
         if ($this->app->runningInConsole()) {
             self::compileSass();
+        }
+
+        $this->publishBundledAssets();
+
+    }
+
+    protected function publishBundledAssets()
+    {
+        Artisan::call('bladekit:bundle-assets -vvv');
+        $distPath = __DIR__.'/../dist';
+        $publicPath = public_path('vendor');
+
+        if (getenv('APP_ENV') === 'local') {
+            // Create a symbolic link
+            if (!file_exists($publicPath.'/bladekit')) {
+                shell_exec('ln -s '.$distPath.' '.$publicPath.'/bladekit'.'> /dev/null 2>&1');
+            } else {
+                Log::error('The symbolic link for Bladekit assets already exists.');
+            }
+        } else {
+            Artisan::call('vendor:publish --tag=bladekit-public --force');
+            Log::info('Assets have been published to ' . $publicPath);
         }
     }
 

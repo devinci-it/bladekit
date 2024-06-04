@@ -1,5 +1,5 @@
 <?php
-namespace Devinci\Bladekit\View\Widgets;
+namespace Devinci\Bladekit\Views\Widgets;
 
 use Illuminate\View\Component;
 use Illuminate\Support\Facades\File;
@@ -9,14 +9,16 @@ class CodeSnippet extends Component
     public $code;
     public $theme;
     public $commentChar;
+    public $prompt;
 
     public $file;
     public $isNumbered;
 
-    public function __construct($code = [], $theme = 'light', $file = null, $commentChar = '#',$isNumbered=true)
+    public function __construct($code = [], $theme = 'light', $file = null, $commentChar = '#' , $prompt='>' , $isNumbered = false)
     {
 
         $this->theme = $theme;
+        $this->prompt = $prompt;
         $this->file = $file;
         $this->commentChar = $commentChar;
         $this->isNumbered = $isNumbered;

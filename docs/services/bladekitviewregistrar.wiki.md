@@ -91,7 +91,7 @@ protected function writeToYaml($key, $data)
 ## Example Usage
 
 ```php
-use Devinci\Bladekit\Services\BladekitViewRegistrar;
+use Devinci\Bladekit\Registrars\BladekitViewRegistrar;
 
 $registrar = new BladekitViewRegistrar();
 $registrar->register();

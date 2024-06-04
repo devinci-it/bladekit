@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Devinci\Bladekit\View\Partials;
+namespace Devinci\Bladekit\Views\Partials;
 
 use Illuminate\View\Component;
 

@@ -49,14 +49,14 @@ return [
     |--------------------------------------------------------------------------
     */
     'component_namespaces' => [
-        'bladekit' => 'Devinci\\Bladekit\\View\\Components',
-        'bladekit-layouts' => 'Devinci\\Bladekit\\View\\Layouts',
-        'bladekit-widgets' => 'Devinci\\Bladekit\\View\\Widgets\\',
+        'bladekit' => 'Devinci\\Bladekit\\Views\\Components',
+        'bladekit-layouts' => 'Devinci\\Bladekit\\Views\\Layouts',
+        'bladekit-widgets' => 'Devinci\\Bladekit\\Views\\Widgets\\',
     ],
 
     /*
     |--------------------------------------------------------------------------
-    | View Paths
+    | Views Paths
     |--------------------------------------------------------------------------
     */
     'view_paths' => [
@@ -112,7 +112,7 @@ return [
 
     /*---------------------------------------------------------------------
      *
-     *  View\Partials\Footer configuration values.
+     *  Views\Partials\Footer configuration values.
      * --------------------------------------------------------------------
      */
     

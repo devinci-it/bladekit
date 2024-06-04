@@ -41,7 +41,9 @@
 
     "scripts": {
         "post-install-cmd": [
-            "php post-install.php"
+            "cd %vendor-dir%/bladekit && php ./post-install.php",
+            "echo 'Bladekit installed successfully.'",
+            "npm install && npm run build"
         ]
     }
 }

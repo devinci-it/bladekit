@@ -9,39 +9,44 @@ class Console
 {
     protected $output;
 
-    public function __construct(ConsoleOutput $output)
+    public function __construct($output=null)
     {
-        $this->output = $output;
+        $this->output = $output ? $output : new ConsoleOutput();
     }
 
     public function displayMessage(string $message, string $messageType = 'default', bool $highlight = false)
     {
         switch ($messageType) {
             case 'info':
-                $symbol = 'ℹ️';
+                $icon = 'ℹ️';
                 $style = 'info';
                 $color = 'cyan';
                 break;
             case 'warning':
-                $symbol = '⚠️';
+                $icon = '⚠️';
                 $style = 'comment';
                 $color = 'yellow';
                 break;
             case 'error':
-                $symbol = '❌';
+                $icon = '❌';
                 $style = 'error';
                 $color = 'red';
                 break;
             case 'alert':
-                $symbol = '🚨';
+                $icon = '🚨';
                 $style = 'error';
                 $color = 'magenta';
                 break;
             case 'prompt':
-                $symbol = '➡️';
+                $icon = '➡️';
                 $style = 'info';
                 $color = 'green';
                 $message .= ':';
+                break;
+            case 'success':
+                $icon= '✅';
+                $style = 'success';
+                $color = 'bright-green';
                 break;
             default:
                 $icon= '🚀';
@@ -61,14 +66,18 @@ class Console
     }
     public function displayMessageWithBorder(string $body, string $header = null, string $subHeader = null)
     {
-        $border = str_repeat('-', 120); // Adjust the number as needed
+        $border = str_repeat('-', 0); // Adjust the number as needed
+
+        // Format the body to be bold and padded to a minimum width of 120 characters
+        $body = sprintf('<options=bold;fg=bright-white>%s</>', str_pad($body, 120, " ", STR_PAD_RIGHT
+        ));
 
         // Display the border
         $this->output->writeln($border);
 
         // Display the header if it's provided
         if ($header !== null) {
-            $this->output->writeln('* ' . $header);
+            $this->output->writeln(' ' . $header);
             $this->output->writeln($border);
         }
 
@@ -87,15 +96,14 @@ class Console
 
 
 
-
     public function displayHeader(string $message)
     {
-        $this->output->writeln(sprintf('<bg=blue;fg=white> %s </>', $message));
+        $this->output->writeln(sprintf('<bg=blue;fg=bright-yellow> %s </>', $message));
     }
 
     public function displaySubHeader(string $message)
     {
-        $this->output->writeln(sprintf('<bg=blue;fg=white> %s </>', $message));
+        $this->displayMessageWithBorder(sprintf('<bg=blue;fg=bright-white> %s </>', $message));
     }
 
     public function displayBanner(string $message, string $character = '*')

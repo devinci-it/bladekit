@@ -8,9 +8,10 @@
 
     @bladekitStyles
 
-    @if(app()->environment('local'))
-        <!-- Vite's development server provides assets in development -->
-        @vite(['resources/css/app.css', 'resources/js/bladekit.js'])   @else
-        <!-- In production, the assets are resolved through Vite's manifest -->
-        @vite(['resources/js/bladekit.js', 'vendor/courier/build'])    @endif
+        @if(app()->environment('local'))
+            <!-- Vite's development server provides assets in development -->
+
+        @vite(['resources/js/bladekit.js', 'resources/css/index.css','resources/scss/index.scss'])
+
+
 </head>

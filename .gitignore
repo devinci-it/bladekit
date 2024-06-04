@@ -71,8 +71,10 @@ artisan
 
 # Ignore webpack mix file
 webpack.mix.js
+CHANGELOG.md
 .changelog
 /.sandbox/
 bladekit_components.yamlCHANGELOG.md
 /.sandbox/
-_demo
+_demo.CHANGELOG.md
+dist

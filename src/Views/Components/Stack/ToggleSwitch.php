@@ -1,7 +1,7 @@
 <?php
-// src/View/Components/Widgets/ToggleSwitch.php
+// src/Views/Components/Widgets/ToggleSwitch.php
 
-namespace Devinci\Bladekit\View\Components\Stack;
+namespace Devinci\Bladekit\Views\Components\Stack;
 use Illuminate\View\Component;
 
 class ToggleSwitch extends Component

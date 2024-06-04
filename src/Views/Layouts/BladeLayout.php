@@ -1,10 +1,10 @@
 <?php
 
-namespace Devinci\Bladekit\View\Layouts;
+namespace Devinci\Bladekit\Views\Layouts;
 
 use Illuminate\View\Component;
 
-class App extends Component
+class BladeLayout extends Component
 {
     /**
      * Create a new component instance.
@@ -19,6 +19,6 @@ class App extends Component
      */
     public function render()
     {
-        return view('bladekit::layouts.app');
+        return view('bladekit::layouts.blade-layout');
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Devinci\Bladekit\View\Components;
+namespace Devinci\Bladekit\Views\Components;
 
 use Illuminate\View\Component;
 

@@ -20,13 +20,32 @@
 @push('styles')
     <style>
         :root {
-            --inline-code-bg: #f4f4f4; /* Light gray background */
-            --inline-code-padding: 0.2em 0.4em; /* Adjust padding as needed */
-            --inline-code-border-radius: 3px; /* Rounded corners */
-            --inline-code-font: Hubot Sans, monospace; /* Use monospace font */
-            --inline-code-font-size: 90%; /* Default font size */
-            --inline-code-max-width: 100%; /* Max width to allow wrapping */
+            --code-font-family: 'Hubot Sans', sans-serif;
+            --code-font-size: 1rem; /* Adjust as needed */
+            --code-line-height: 1.6; /* Adjust as needed */
+            --code-letter-spacing: normal; /* Adjust as needed */
+            --code-font-weight: normal; /* Adjust as needed */
+            --code-font-stretch: normal; /* Adjust as needed */
+            --code-background-color: #f8f8f8; /* Light gray background */
+            --code-color: #333; /* Dark gray text color */
         }
+
+        code {
+            font-family: var(--code-font-family);
+            font-size: var(--code-font-size);
+            line-height: var(--code-line-height);
+            letter-spacing: var(--code-letter-spacing);
+            font-weight: var(--code-font-weight);
+            font-stretch: var(--code-font-stretch);
+            /*background-color: var(--code-background-color);*/
+            /*color: var(--code-color);*/
+            padding: 0 0.5em; /* Adjust padding as needed */
+            border-radius: 3px; /* Rounded corners */
+            display: inline-block; /* Ensure proper spacing */
+            white-space: pre-wrap; /* Preserve whitespace and allow wrapping */
+            word-wrap: break-word; /* Break long words */
+        }
+
 
         .inline-code {
             background-color: var(--inline-code-bg);
@@ -36,6 +55,10 @@
             font-size: var(--inline-code-font-size);
             max-width: var(--inline-code-max-width);
             word-break: break-word; /* Allow long words to wrap */
+        }
+
+        .inline-code code {
+            content: ' ';
         }
 
         /* Define styling for small inline code */

@@ -26,10 +26,10 @@ class ComponentHandler
             $this->cliHelper->displayMessage('This command will guide you through the process of registering a new view component.');
 
             $componentName = $this->cliHelper->ask('Enter the name of the view component:');
-            $fqnamespace = "Devinci\\Bladekit\\View\\" . $classNameSpace . "\\" . $componentName;
+            $fqnamespace = "Devinci\\Bladekit\\Views\\" . $classNameSpace . "\\" . $componentName;
 
             $basePath = 'src';
-            $mappedNamespace = 'Devinci\\Bladekit\\View\\' . $classNameSpace;
+            $mappedNamespace = 'Devinci\\Bladekit\\Views\\' . $classNameSpace;
             $srcPath = $this->convertToPath($mappedNamespace);
             $this->makeDirectory($srcPath);
             $this->createViewComponent($componentName, $mappedNamespace, $srcPath);
@@ -53,7 +53,7 @@ class ComponentHandler
     private function getNamespace()
     {
         $finder = new Finder();
-        $finder->directories()->in('src/View')->depth('== 0');
+        $finder->directories()->in('src/Views')->depth('== 0');
 
         $directories = [];
         foreach ($finder as $dir) {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Devinci\Bladekit\View\Components;
+namespace Devinci\Bladekit\Views\Components;
 
 use Illuminate\View\Component;
 
@@ -16,6 +16,6 @@ class Button extends Component
 
     public function render()
     {
-        return $this->view("bladekit::components.button");
+        return $this->view("bladekit::uicore.button");
     }
 }

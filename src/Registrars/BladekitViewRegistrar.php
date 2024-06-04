@@ -3,25 +3,26 @@
 namespace Devinci\Bladekit\Registrars;
 
 
-use Devinci\Bladekit\View\Components\Stack\AnchorRow;
-use Devinci\Bladekit\View\Components\Stack\ToggleSwitch;
+use Devinci\Bladekit\Views\Components\Stack\AnchorRow;
+use Devinci\Bladekit\Views\Components\Stack\ToggleSwitch;
 
-use Devinci\Bladekit\View\Layouts\App;
-use Devinci\Bladekit\View\Layouts\Grid;
-use Devinci\Bladekit\View\Layouts\Flex;
-use Devinci\Bladekit\View\Layouts\Interstitial;
+use Devinci\Bladekit\Views\Layouts\BladeLayout;
+use Devinci\Bladekit\Views\Layouts\Grid;
+use Devinci\Bladekit\Views\Layouts\Flex;
+use Devinci\Bladekit\Views\Layouts\Interstitial;
 
-use Devinci\Bladekit\View\Partials\Footer;
-use Devinci\Bladekit\View\Partials\Header;
-use Devinci\Bladekit\View\Partials\Navbar;
+use Devinci\Bladekit\Views\Partials\Footer;
+use Devinci\Bladekit\Views\Partials\Header;
+use Devinci\Bladekit\Views\Partials\Navbar;
 
-use Devinci\Bladekit\View\UiCore\Dialog;
-use Devinci\Bladekit\View\UiCore\Modal;
-use Devinci\Bladekit\View\UiCore\InlineCode;
+use Devinci\Bladekit\Views\UiCore\Button;
+use Devinci\Bladekit\Views\UiCore\Dialog;
+use Devinci\Bladekit\Views\UiCore\Modal;
+use Devinci\Bladekit\Views\UiCore\InlineCode;
 
 
-use Devinci\Bladekit\View\Widgets\PageHeader;
-use Devinci\Bladekit\View\Widgets\CodeSnippet;
+use Devinci\Bladekit\Views\Widgets\PageHeader;
+use Devinci\Bladekit\Views\Widgets\CodeSnippet;
 
 
 use Illuminate\Support\Facades\Blade;
@@ -48,14 +49,21 @@ class BladekitViewRegistrar
      */
     public function register()
     {
-
+        View::addNamespace('bladekit', __DIR__.'/../resources/views');
         View::addNamespace('bladekit-widgets', base_path(__DIR__.'/../../resources/views/widgets'));
         View::addNamespace('bladekit-layouts', base_path(__DIR__.'/../../resources/views/layouts'));
-        View::addNamespace('bladekit-uicore', base_path(__DIR__ . '/../../resources/views/uicore/'));
-        View::addNamespace('bladekit-partials', base_path(__DIR__ . '/../../resources/views/partials/'));
+        View::addNamespace('bladekit-uicore', base_path(__DIR__ . '/../../resources/views/uicore'));
+        View::addNamespace('bladekit-partials', base_path(__DIR__ . '/../../resources/views/partials'));
+
+        Blade::anonymousComponentNamespace(__DIR__."/../../resources/views/layouts");
+        Blade::anonymousComponentNamespace(__DIR__."/../../resources/views/partials");
+        Blade::anonymousComponentNamespace(__DIR__."/../../resources/views/uicore");
+        Blade::anonymousComponentNamespace(__DIR__." /../../resources/views/widgets");
+
 
 
         Blade::component('bladekit-uicore::modal',Modal::class);
+        Blade::component('bladekit-uicore::button',Button::class);
         Blade::component('bladekit-uicore::dialog' ,Dialog::class);
         Blade::component('bladekit-uicore::inline-code' ,InlineCode::class);
 
@@ -68,7 +76,7 @@ class BladekitViewRegistrar
 
 
 
-        Blade::component('bladekit-layouts::app', App::class);
+        Blade::component('bladekit-layouts:blade-layout',BladeLayout::class);
         Blade::component('bladekit-layouts::grid', Grid::class);
         Blade::component('bladekit-layouts::flex',Flex::class);
 
@@ -78,10 +86,9 @@ class BladekitViewRegistrar
         Blade::component('bladekit::stack.toggle-switch', ToggleSwitch::class);
         Blade::component('bladekit::stack.anchor-row',  AnchorRow::class);
 
-        Blade::anonymousComponentNamespace(__DIR__."/../../resources/views/layouts");
-        Blade::anonymousComponentNamespace(__DIR__."/../../resources/views/partials");
-        Blade::anonymousComponentNamespace(__DIR__."/../../resources/views/uicore");
-        Blade::anonymousComponentNamespace(__DIR__." /../../resources/view/widgets");
+
+
+
 
         $this->registerViews();
 //        $this->registerComponentNamespaces();
@@ -102,7 +109,7 @@ class BladekitViewRegistrar
     protected function validateViewPathsConfig()
     {
         if (!isset($this->config['view_paths']) || !is_array($this->config['view_paths'])) {
-            throw new \RuntimeException('View paths configuration is missing or invalid.');
+            throw new \RuntimeException('Views paths configuration is missing or invalid.');
         }
     }
 

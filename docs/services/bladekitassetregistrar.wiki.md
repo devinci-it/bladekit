@@ -27,7 +27,7 @@ The `BladekitAssetRegistrar` class manages the registration and removal of Blade
 ## Example Usage
 
 ```php
-use Devinci\Bladekit\Services\BladekitAssetRegistrar;
+use Devinci\Bladekit\Registrars\BladekitAssetRegistrar;
 
 // Retrieve asset paths
 $assets = BladekitAssetRegistrar::getAssets();

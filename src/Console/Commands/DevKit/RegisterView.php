@@ -21,7 +21,7 @@ class RegisterView extends Command
      *
      * @var string
      */
-    protected $description = 'Automatically register a new View Component';
+    protected $description = 'Automatically register a new Views Component';
 
     public function handle()
     {
@@ -30,7 +30,7 @@ class RegisterView extends Command
 
         // If namespace is not provided, prompt the user
         if (!$namespace) {
-            $namespace = $this->ask('Enter the component namespace (e.g., App\\View\\Components\\):');
+            $namespace = $this->ask('Enter the component namespace (e.g., BladeLayout\\Views\\Components\\):');
         }
 
         // Validate namespace format
@@ -56,7 +56,7 @@ class RegisterView extends Command
         $registrationCode = "\nBlade::component('{$namespace}{$componentName}', {$namespace}\\{$componentName}::class);\n";
         File::append($registrarPath, $registrationCode);
 
-        $this->info("View Component {$componentName} has been registered under namespace {$namespace}.");
+        $this->info("Views Component {$componentName} has been registered under namespace {$namespace}.");
 
         // Add new namespace if --add-namespace option is provided
         if ($this->option('add-namespace')) {
@@ -85,7 +85,7 @@ class RegisterView extends Command
         }
 
         // Create the component PHP class if it doesn't exist
-        $componentClassPath = app_path("View/Components/{$directory}/{$componentName}.php");
+        $componentClassPath = app_path("Views/Components/{$directory}/{$componentName}.php");
         if (!File::exists($componentClassPath)) {
             $componentStub = File::get(__DIR__ . '/stubs/component.stub');
             $componentStub = str_replace('{{namespace}}', $namespace, $componentStub);

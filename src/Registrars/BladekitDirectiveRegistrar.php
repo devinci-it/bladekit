@@ -7,6 +7,13 @@ use Illuminate\Support\Facades\File;
 
 class BladekitDirectiveRegistrar
 {
+    public $npmJsUrl = [
+        "prismjs"=>"https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js",
+        "prismjs-line-numbers"=>"https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.js"
+    ];
+        public $npmCssUrl = [
+            "prismjs"=>"https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css"
+        ];
     /**
      * Register all the Blade directives.
      *
@@ -42,7 +49,7 @@ class BladekitDirectiveRegistrar
 
             $resetCssPath = public_path('assets/vendor/bladekit/css/reset.css');
             $indexCssPath = public_path('assets/vendor/bladekit/css/index.css');
-            $sassIndexCssPath = public_path('assets/vendor/bladekit/css/sass-index.css');
+            $sassIndexCssPath = public_path('assets/vendor/bladekit/css/index.css');
 
             $links = '';
 
@@ -55,7 +62,7 @@ class BladekitDirectiveRegistrar
             }
 
             if (File::exists($sassIndexCssPath)) {
-                $links .= '<link rel="stylesheet" href="'. asset('assets/vendor/bladekit/css/sass-index.css') .'">';
+                $links .= '<link rel="stylesheet" href="'. asset('assets/vendor/bladekit/css/index.css') .'">';
             }
 
             return $links;
@@ -70,8 +77,25 @@ class BladekitDirectiveRegistrar
      */
     protected static function registerScriptDirective()
     {
-        Blade::directive('bladekitScript', function ($expression) {
-            return "<?php echo asset('assets/vendor/bladekit/js/' . trim($expression, '\"')); ?>";
+        Blade::directive('bladekitScripts', function ($expression) {
+            $scriptTags = '';
+
+            // Script for bladekit.js
+            $bladekitPath = public_path('assets/vendor/bladekit/js/bladekit.js');
+            $bladekitAssetPath = asset(str_replace(public_path(), '', $bladekitPath));
+            $scriptTags .= '<script src="' . $bladekitAssetPath . '"></script>';
+
+            // External CDN links (if any)
+            $externalScripts = json_decode($expression, true);
+
+            if (is_array($externalScripts)) {
+                foreach ($externalScripts as $script) {
+                    $scriptTags .= '<script src="' . htmlspecialchars($script, ENT_QUOTES, 'UTF-8') . '"></script>';
+                }
+            }
+
+            return $scriptTags;
         });
     }
+
 }

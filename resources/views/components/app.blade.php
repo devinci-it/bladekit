@@ -1,4 +1,4 @@
-<!-- resources/views/components/layouts/app.blade.php -->
+<!-- resources/views/components/layouts/blade-layout.blade.php -->
 @php
 /**
 * Main layout template.

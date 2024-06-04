@@ -3,7 +3,7 @@
 namespace Devinci\Bladekit\Console\Commands;
 
 use Illuminate\Console\Command;
-use Devinci\Bladekit\Services\BladekitAssetRegistrar;
+use Devinci\Bladekit\Registrars\BladekitAssetRegistrar;
 
 /**
  * Command to remove published Bladekit assets.

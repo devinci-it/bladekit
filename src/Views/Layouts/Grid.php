@@ -1,6 +1,6 @@
 <?php
 
-namespace Devinci\Bladekit\View\Layouts;
+namespace Devinci\Bladekit\Views\Layouts;
 
 use Illuminate\View\Component;
 
@@ -38,7 +38,6 @@ class Grid extends Component
     /**
      * Get the view / contents that represent the component.
      *
-     * @return \Illuminate\Contracts\View\View|string
      */
     public function render()
     {

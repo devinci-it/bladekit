@@ -1,6 +1,6 @@
 <?php
 
-namespace Devinci\Bladekit\View\Widgets;
+namespace Devinci\Bladekit\Views\Widgets;
 use Illuminate\View\Component;
 
 class PageHeader extends Component

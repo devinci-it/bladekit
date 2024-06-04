@@ -1,11 +1,11 @@
 <?php
 
 namespace Devinci\Bladekit\Console\Commands;
-
+use Devinci\Bladekit\Console\Console;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
-use Devinci\Bladekit\Services\BladekitCommandRegistrar;
+use Devinci\Bladekit\Registrars\BladekitCommandRegistrar;
 use ReflectionClass;
 use Symfony\Component\Console\Helper\Table;
 

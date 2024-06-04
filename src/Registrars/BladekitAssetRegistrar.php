@@ -47,6 +47,9 @@ class BladekitAssetRegistrar
                 'bladekit-config' => [
                     __DIR__ . '/../../config/bladekit.php' => config_path('bladekit.php'),
                 ],
+                'bladekit-public'=>[
+                    __DIR__.'/../../dist'=>public_path('vendor/bladekit')
+                ]
             ];
         }
 
