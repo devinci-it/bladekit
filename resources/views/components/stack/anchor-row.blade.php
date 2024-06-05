@@ -1,7 +1,8 @@
+@use('Devinci\Bladekit\Helpers\PathHelper')
 <div class="anchor-row {{ $classes }}">
     <a href="{{ $href }}" class="anchor-link">
-        @if($icon)
-            <img src="@bladekitIcon($icon)" alt="Icon" class="anchor-icon">
+        @if(isset($icon))
+            @bladekitIcon($icon)
         @endif
         <div class="anchor-text">
             <div class="anchor-header">{{ $header }}</div>
@@ -17,7 +18,6 @@
 
 <style>
     .anchor-row {
-
         display: flex;
         align-items: center;
         border-radius: 8px;

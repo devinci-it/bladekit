@@ -2,7 +2,10 @@
 
 namespace Devinci\Bladekit\Views\Components\Stack;
 
+use Devinci\Bladekit\Helpers\PathHelper;
 use Illuminate\View\Component;
+use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Log;
 
 class AnchorRow extends Component
 {
@@ -23,20 +26,19 @@ class AnchorRow extends Component
 
     public function getSvgIcon()
     {
-        if ($this->icon && file_exists(public_path($this->icon))) {
-            $svgContent = file_get_contents(public_path($this->icon));
-            $svgContent = str_replace('<svg ', '<svg fill="lightgray" ', $svgContent);
-            return $svgContent;
+        $iconPath = asset('vendor/bladekit/images/' . $this->icon);
+        if ($this->icon && file_exists($iconPath)) {
+            return $iconPath;
         }
 
+        Log::error('Icon not found: ' . $this->icon);
         return null;
     }
-
 
     public function render()
     {
         return view('bladekit::components.stack.anchor-row', [
-            'svgIcon' => $this->getSvgIcon(),
+            'icon' => $this->icon,
         ]);
     }
 }

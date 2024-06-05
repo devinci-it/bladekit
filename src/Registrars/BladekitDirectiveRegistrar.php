@@ -4,6 +4,10 @@ namespace Devinci\Bladekit\Registrars;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
+use Devinci\Bladekit\Helpers\PathHelper;
+
+
 
 class BladekitDirectiveRegistrar
 {
@@ -16,11 +20,12 @@ class BladekitDirectiveRegistrar
      */
     public static function register()
     {
-        self::registerIconDirective();
         self::registerViteStylesDirective();
         self::registerViteScriptsDirective();
         self::registerStylesDirective();
         self::registerScriptDirective();
+        self::registerIconDirective();
+
     }
 
     /**
@@ -28,25 +33,19 @@ class BladekitDirectiveRegistrar
      *
      * @return void
      */
-    protected static function registerIconDirective()
+
+
+    public static function registerIconDirective()
     {
         Blade::directive('bladekitIcon', function ($expression) {
-            $publicPath = public_path('vendor/bladekit/images/');
-            $iconPath = trim($expression, '\'"');
-
-            // Check if the icon file exists
-            if (file_exists($publicPath . $iconPath)) {
-                return "<?php echo asset('vendor/bladekit/images/' . $iconPath); ?>";
+            // Check if the expression is a valid variable name
+            if (preg_match('/^\$[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $expression)) {
+                return "<?php echo '<img src=\"' . e(PathHelper::getIconAssetUrl($expression)) . '\" alt=\"Icon\" class=\"anchor-icon\">'; ?>";
             } else {
-                // Optionally, you can log an error message if the icon file is not found
-                // error_log("Icon not found: $iconPath");
-
-                // Return a default icon or an empty string as fallback
-                return "";
+                return '<?php echo ""; ?>'; // Return an empty string if $expression is not a valid variable
             }
         });
-    }
-
+            }
     /**
      * Register the @bladekitStyles directive.
      *
