@@ -44,9 +44,9 @@ class BundleAssets extends Command
 
             // Check if the command was successful
             if ($return_var == 0){
-                $bundleLocation = trim($curDir) . "/vendor/devinci-it/bladekit/dist";
+                $bundleLocation = trim($curDir) . "/vendor/devinci-it/public/build";
                 $this->con->displayMessage('BLADEKIT: Assets Bundled Successfully at ' . $bundleLocation,'success');
-                $this->con->displayMessageWithBorder('php artisan vendor:publish --tag=public --force'
+                $this->con->displayMessageWithBorder('php artisan vendor:publish --tag=bundle-aassets --force'
                     ,'To make the bundled assets available, run the following command:');
             }else{
                 $this->con->displayMessage('Error Bundling Assets, Please check the package root directory','error');

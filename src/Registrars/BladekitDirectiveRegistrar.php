@@ -7,13 +7,8 @@ use Illuminate\Support\Facades\File;
 
 class BladekitDirectiveRegistrar
 {
-    public $npmJsUrl = [
-        "prismjs"=>"https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js",
-        "prismjs-line-numbers"=>"https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.js"
-    ];
-        public $npmCssUrl = [
-            "prismjs"=>"https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css"
-        ];
+    public $npmJsUrl = [];
+        public $npmCssUrl = [];
     /**
      * Register all the Blade directives.
      *
@@ -22,6 +17,8 @@ class BladekitDirectiveRegistrar
     public static function register()
     {
         self::registerIconDirective();
+        self::registerViteStylesDirective();
+        self::registerViteScriptsDirective();
         self::registerStylesDirective();
         self::registerScriptDirective();
     }
@@ -34,7 +31,19 @@ class BladekitDirectiveRegistrar
     protected static function registerIconDirective()
     {
         Blade::directive('bladekitIcon', function ($expression) {
-            return "<?php echo asset('assets/vendor/bladekit/icons/' . trim($expression, '\"')); ?>";
+            $publicPath = public_path('vendor/bladekit/images/');
+            $iconPath = trim($expression, '\'"');
+
+            // Check if the icon file exists
+            if (file_exists($publicPath . $iconPath)) {
+                return "<?php echo asset('vendor/bladekit/images/' . $iconPath); ?>";
+            } else {
+                // Optionally, you can log an error message if the icon file is not found
+                // error_log("Icon not found: $iconPath");
+
+                // Return a default icon or an empty string as fallback
+                return "";
+            }
         });
     }
 
@@ -66,6 +75,58 @@ class BladekitDirectiveRegistrar
             }
 
             return $links;
+        });
+    }
+
+    protected static function registerViteStylesDirective()
+    {
+        Blade::directive('bladekitViteStyles', function ($expression) {
+            $publicPath = public_path('vendor/bladekit/css/');
+            $cssFiles = array_filter(scandir($publicPath), function ($cssFile) {
+                return substr($cssFile, -4) === '.css';
+            });
+
+            $links = '';
+            foreach ($cssFiles as $cssFile) {
+                $links .= '<link rel="stylesheet" href="' . asset('vendor/bladekit/css/' . $cssFile) . '">';
+            }
+
+            // Find the font file dynamically
+            $fontPath = public_path('vendor/bladekit/assets/');
+            $fontFiles = array_filter(scandir($fontPath), function ($fontFile) {
+                return preg_match('/HubotSans.*\.woff2$/', $fontFile);
+            });
+
+            $fontFile = reset($fontFiles);
+            $fontUrl = asset('vendor/bladekit/assets/' . $fontFile);
+
+            // Append the font-face definition to the links
+            $links .= "<style>
+            @font-face {
+                font-family: 'HubotSans';
+                src: url('{$fontUrl}') format('woff2');
+                font-weight: normal;
+                font-style: normal;
+            }
+        </style>";
+
+            return $links;
+        });
+    }
+    protected static function registerViteScriptsDirective()
+    {
+        Blade::directive('bladekitViteScripts', function ($expression) {
+            $publicPath = public_path('vendor/bladekit/js/');
+            $jsFiles = array_filter(scandir($publicPath), function ($jsFile) {
+                return substr($jsFile, -3) === '.js';
+            });
+
+            $scripts = '';
+            foreach ($jsFiles as $jsFile) {
+                $scripts .= '<script src="' . asset('vendor/bladekit/js/' . $jsFile) . '"></script>';
+            }
+
+            return $scripts;
         });
     }
 

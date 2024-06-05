@@ -16,7 +16,8 @@
 @use('Illuminate\Support\Facades\Vite')
 
 <!DOCTYPE html>
-    <html lang="en" xmlns:x-bladekit-partials="http://www.w3.org/1999/html"/>
+    <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
 
     <x-bladekit-partials::header/>
 

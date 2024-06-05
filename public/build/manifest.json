@@ -1,0 +1,155 @@
+{
+  "resources/css/index.css": {
+    "file": "css/index.BqxH3d-0.css",
+    "src": "resources/css/index.css",
+    "isEntry": true
+  },
+  "resources/css/reset.css": {
+    "file": "css/reset.CXM4VsNx.css",
+    "src": "resources/css/reset.css",
+    "isEntry": true
+  },
+  "resources/fonts/HubotSans[slnt,wdth,wght].woff2": {
+    "file": "assets/HubotSans_slnt_wdth_wght_.DLGyhQVu.woff2",
+    "src": "resources/fonts/HubotSans[slnt,wdth,wght].woff2"
+  },
+  "resources/icons/all.svg": {
+    "file": "images/all.DzxNOfEk.svg",
+    "src": "resources/icons/all.svg"
+  },
+  "resources/icons/cert.svg": {
+    "file": "images/cert.D17Ol2kx.svg",
+    "src": "resources/icons/cert.svg"
+  },
+  "resources/icons/copy.svg": {
+    "file": "images/copy.nmplhjDO.svg",
+    "src": "resources/icons/copy.svg"
+  },
+  "resources/icons/date.svg": {
+    "file": "images/date.LFVurtIl.svg",
+    "src": "resources/icons/date.svg"
+  },
+  "resources/icons/del.svg": {
+    "file": "images/del.t5PLtOfG.svg",
+    "src": "resources/icons/del.svg"
+  },
+  "resources/icons/delete.svg": {
+    "file": "images/delete.Br9o89uU.svg",
+    "src": "resources/icons/delete.svg"
+  },
+  "resources/icons/discover.svg": {
+    "file": "images/discover.Cyhxa4NY.svg",
+    "src": "resources/icons/discover.svg"
+  },
+  "resources/icons/edit.svg": {
+    "file": "images/edit.CQSzrq4F.svg",
+    "src": "resources/icons/edit.svg"
+  },
+  "resources/icons/email.svg": {
+    "file": "images/email.6FnDICRk.svg",
+    "src": "resources/icons/email.svg"
+  },
+  "resources/icons/favorite.svg": {
+    "file": "images/favorite.jV_SCTAQ.svg",
+    "src": "resources/icons/favorite.svg"
+  },
+  "resources/icons/file.svg": {
+    "file": "images/new.CjszLqA6.svg",
+    "src": "resources/icons/new.svg"
+  },
+  "resources/icons/gist.svg": {
+    "file": "images/gist.OQFPTHE1.svg",
+    "src": "resources/icons/gist.svg"
+  },
+  "resources/icons/git.svg": {
+    "file": "images/git.Bhqkas4Q.svg",
+    "src": "resources/icons/git.svg"
+  },
+  "resources/icons/home.svg": {
+    "file": "images/home.D7jbN38W.svg",
+    "src": "resources/icons/home.svg"
+  },
+  "resources/icons/id.svg": {
+    "file": "images/id.CG3ADKNj.svg",
+    "src": "resources/icons/id.svg"
+  },
+  "resources/icons/issuer.svg": {
+    "file": "images/issuer.WgtcaBZt.svg",
+    "src": "resources/icons/issuer.svg"
+  },
+  "resources/icons/link.svg": {
+    "file": "images/link.BsP787YK.svg",
+    "src": "resources/icons/link.svg"
+  },
+  "resources/icons/lookup.svg": {
+    "file": "images/lookup.vnzo4fZq.svg",
+    "src": "resources/icons/lookup.svg"
+  },
+  "resources/icons/name.svg": {
+    "file": "images/name.BF7hiU7S.svg",
+    "src": "resources/icons/name.svg"
+  },
+  "resources/icons/net.svg": {
+    "file": "images/net.MLP2WRy2.svg",
+    "src": "resources/icons/net.svg"
+  },
+  "resources/icons/new.svg": {
+    "file": "images/new.CjszLqA6.svg",
+    "src": "resources/icons/new.svg"
+  },
+  "resources/icons/password.svg": {
+    "file": "images/password.CnPaTKW3.svg",
+    "src": "resources/icons/password.svg"
+  },
+  "resources/icons/plus.svg": {
+    "file": "images/plus.CusiGgGM.svg",
+    "src": "resources/icons/plus.svg"
+  },
+  "resources/icons/save.svg": {
+    "file": "images/save.D2euvT3r.svg",
+    "src": "resources/icons/save.svg"
+  },
+  "resources/icons/search.svg": {
+    "file": "images/search.Us510-kq.svg",
+    "src": "resources/icons/search.svg"
+  },
+  "resources/icons/stop.svg": {
+    "file": "images/stop.zFMlx1YK.svg",
+    "src": "resources/icons/stop.svg"
+  },
+  "resources/icons/username.svg": {
+    "file": "images/username.BgUzOhzU.svg",
+    "src": "resources/icons/username.svg"
+  },
+  "resources/images/delete-icon.svg": {
+    "file": "images/del.t5PLtOfG.svg",
+    "src": "resources/icons/del.svg"
+  },
+  "resources/images/edit-icon.svg": {
+    "file": "images/edit.CQSzrq4F.svg",
+    "src": "resources/icons/edit.svg"
+  },
+  "resources/images/git.svg": {
+    "file": "images/git.Bhqkas4Q.svg",
+    "src": "resources/icons/git.svg"
+  },
+  "resources/images/repo.svg": {
+    "file": "images/repo.LTRHrxtc.svg",
+    "src": "resources/images/repo.svg"
+  },
+  "resources/images/save-icon.svg": {
+    "file": "images/save-icon.BZixmhoN.svg",
+    "src": "resources/images/save-icon.svg"
+  },
+  "resources/js/bladekit.js": {
+    "file": "js/bladekit.grA1I7ac.js",
+    "name": "bladekit",
+    "src": "resources/js/bladekit.js",
+    "isEntry": true
+  },
+  "resources/scss/index.scss": {
+    "file": "css/index.BM4IRFhf.css",
+    "src": "resources/scss/index.scss",
+    "isEntry": true
+  }
+}
