@@ -1,9 +1,9 @@
 
 // Initialize Prism for syntax highlighting
 import Prism from "prismjs";
-import "prismjs/themes/prism.css";
 
 // Import all files from specified directories
+import './bootstrap.js';
 
 import.meta.glob('../images/**');
 import.meta.glob('../fonts/**');

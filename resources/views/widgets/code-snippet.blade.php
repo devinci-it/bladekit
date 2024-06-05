@@ -59,17 +59,43 @@
 </div>
 
 
+@once
+
 @push('styles')
     <style>
-        /* Customizable colors */
+
+        .button {
+            transition: background-color 0.3s ease;
+        }
+
+        .button.copied {
+            background-color: #4CAF50; /* Green */
+            color: white;
+        }
+
+        .copied-message {
+            display: none;
+            margin-top: 10px;
+            font-size: 14px;
+            color: #4CAF50; /* Green */
+            animation: fadeInOut 2s ease;
+        }
+
+        @keyframes fadeInOut {
+            0% { opacity: 0; }
+            20% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { opacity: 0; }
+        }
 
         :root {
+            --code-font-family:'Hubot Sans', monospaced;
             --main-bg-color-light: #f8f9fa; /* Light theme background color */
-            --main-bg-color-dark: #2d2d2d; /* Dark theme background color */
+            --main-bg-color-dark: #21242e !important; /* Dark theme background color */
             --accent-color: #007bff; /* Accent color */
             --button-bg-color: rgba(200, 221, 245, 0.57); /* Button background color */
             --border-color: #6c757d; /* Border color */
-            --text-color: #20242e;/* Text color */
+            --text-color: #262c3a;/* Text color */
         }
 
         /* Common styles for light and dark themes */
@@ -153,9 +179,9 @@
         .code-snippet.dark {
             background-color: var(--main-bg-color-dark) !important;
         }
+
         .dark code.code-line{
             color: #f8f8f2; /* Adjust text color for dark theme */
-
         }
 
         .code-snippet .header, .code-snippet .footer {
@@ -178,4 +204,25 @@
 
     </style>
 @endpush
+
+    @push('scripts')
+        <script>
+            function copyToClipboard(text) {
+                var textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                textArea.setSelectionRange(0, 99999);
+                try {
+                    var successful = document.execCommand('copy');
+                    console.log('Copying text command was ' + (successful ? 'successful' : 'unsuccessful'));
+                } catch (err) {
+                    console.error('Unable to copy', err);
+                }
+                document.body.removeChild(textArea);
+            }
+        </script>
+    @endpush
+@endonce
+
 

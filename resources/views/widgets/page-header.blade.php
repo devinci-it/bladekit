@@ -39,7 +39,7 @@
     @endif
 </div>
 
-
+@once
 @push('styles')
     <style>
         .header-icon {
@@ -92,3 +92,4 @@
     </style>
 
 @endpush
+@endonce
