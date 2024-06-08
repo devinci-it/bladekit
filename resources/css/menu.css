@@ -1,36 +1,181 @@
+/* Base styles for the menu */
 .menu {
-    display: flex;
-    flex-direction: column;
-    width: 300px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 10px;
-    background: #f9f9f9;
-  }
-  
-  .menu-item {
-    margin-bottom: 10px;
-  }
-  
-  .toggle, .dropdown, .radio, .checkmark {
-    display: flex;
-    align-items: center;
-    margin-bottom: 5px;
-  }
-  
-  .toggle input, .checkmark input {
-    margin-right: 10px;
-  }
-  
-  .dropdown select {
-    margin-left: 10px;
-  }
-  
-  .radio label {
-    margin-right: 10px;
-  }
-  
-  .text {
-    margin: 0;
-  }
-  
+  background-color: #f8f9fa; /* Light background */
+  border-radius: 12px; /* Rounded corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  padding: 20px; /* Space inside */
+  margin: 20px auto; /* Center alignment */
+  max-width: 600px; /* Max width for the menu */
+}
+
+/* Styles for each menu item */
+.menu-item {
+  margin-bottom: 15px; /* Space between items */
+  padding: 10px; /* Space inside each item */
+  border-bottom: 1px solid #e0e0e0; /* Light border */
+}
+
+.menu-item:last-child {
+  border-bottom: none; /* Remove border for last item */
+}
+
+/* Toggle component styles */
+.toggle {
+  display: flex;
+  align-items: center;
+}
+
+.toggle input[type="checkbox"] {
+  appearance: none; /* Remove default styles */
+  width: 40px;
+  height: 20px;
+  background-color: #ccc;
+  border-radius: 10px;
+  position: relative;
+  cursor: pointer;
+  outline: none;
+  transition: background-color 0.3s;
+}
+
+.toggle input[type="checkbox"]:checked {
+  background-color: #4caf50; /* Active state color */
+}
+
+.toggle input[type="checkbox"]:checked::before {
+  transform: translateX(20px);
+}
+
+.toggle input[type="checkbox"]::before {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  background-color: #fff;
+  border-radius: 50%;
+  transition: transform 0.3s;
+}
+
+.toggle label {
+  margin-left: 10px;
+  font-size: 16px;
+  color: #333;
+}
+
+/* Dropdown component styles */
+.dropdown {
+  display: flex;
+  flex-direction: column;
+}
+
+.dropdown select {
+  appearance: none;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  font-size: 16px;
+  color: #333;
+  transition: border-color 0.3s;
+}
+
+.dropdown select:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+/* Text component styles */
+.text {
+  font-size: 16px;
+  color: #333;
+}
+
+/* Radio component styles */
+.radio {
+  display: flex;
+  flex-direction: column;
+}
+
+.radio label {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+  font-size: 16px;
+  color: #333;
+}
+
+.radio input[type="radio"] {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #ccc;
+  border-radius: 50%;
+  margin-right: 10px;
+  cursor: pointer;
+  transition: border-color 0.3s;
+  position: relative;
+}
+
+.radio input[type="radio"]:checked {
+  border-color: #007bff;
+}
+
+.radio input[type="radio"]:checked::before {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 10px;
+  height: 10px;
+  background-color: #007bff;
+  border-radius: 50%;
+}
+
+/* Checkmark component styles */
+.checkmark {
+  display: flex;
+  align-items: center;
+}
+
+.checkmark input[type="checkbox"] {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  position: relative;
+  cursor: pointer;
+  transition: border-color 0.3s;
+}
+
+.checkmark input[type="checkbox"]:checked {
+  border-color: #007bff;
+}
+
+.checkmark input[type="checkbox"]:checked::before {
+  content: '✔';
+  position: absolute;
+  top: 0;
+  left: 2px;
+  font-size: 14px;
+  color: #007bff;
+}
+
+.checkmark label {
+  margin-left: 10px;
+  font-size: 16px;
+  color: #333;
+}
+
+/* General styles */
+body {
+  background-color: #e9ecef; /* Light background */
+  color: #333; /* Default text color */
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  padding: 20px;
+}

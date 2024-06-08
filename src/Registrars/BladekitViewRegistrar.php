@@ -2,7 +2,7 @@
 
 namespace Devinci\Bladekit\Registrars;
 
-
+use Devinci\Bladekit\Views\FormUnits\FileUpload;
 use Devinci\Bladekit\Views\Components\Stack\AnchorRow;
 use Devinci\Bladekit\Views\Components\Stack\ToggleSwitch;
 
@@ -64,13 +64,14 @@ class BladekitViewRegistrar
         View::addNamespace('bladekit-uicore', base_path(__DIR__ . '/../../resources/views/uicore'));
         View::addNamespace('bladekit-partials', base_path(__DIR__ . '/../../resources/views/partials'));
         View::addNamespace('bladekit-uicontrols', base_path(__DIR__ . '/../../resources/views/uicontrols'));
-
+        View::addNamespace('bladekit-form-units', base_path(__DIR__ . '/../../resources/views/form-units'));
 
         Blade::anonymousComponentNamespace(__DIR__."/../../resources/views/layouts");
         Blade::anonymousComponentNamespace(__DIR__."/../../resources/views/partials");
         Blade::anonymousComponentNamespace(__DIR__."/../../resources/views/uicore");
         Blade::anonymousComponentNamespace(__DIR__." /../../resources/views/widgets");
         Blade::anonymousComponentNamespace(__DIR__." /../../resources/views/uicontrols");
+        Blade::anonymousComponentNamespace(__DIR__." /../../resources/views/form-units");
 
         Blade::component('bladekit-uicore::modal',Modal::class);
         Blade::component('bladekit-uicore::button',Button::class);
@@ -88,7 +89,7 @@ class BladekitViewRegistrar
 
 
 
-
+        Blade::component('bladekit-layouts::interstitial',Interstitial::class);
         Blade::component('bladekit-layouts:blade-layout',BladeLayout::class);
         Blade::component('bladekit-layouts::grid', Grid::class);
         Blade::component('bladekit-layouts::flex',Flex::class);
@@ -106,6 +107,10 @@ class BladekitViewRegistrar
         Blade::component('bladekit-uicontrols::text',  Text::class);
         Blade::component('bladekit-uicontrols::radio',  Radio::class);
         Blade::component('bladekit-uicontrols::checkmark',  Checkmark::class);
+
+        // Form Units
+        Blade::component('bladekit-form-units::file-upload', FileUpload::class);
+
 
 
         View::addNamespace('bladekit', __DIR__.'/../resources/views');
@@ -168,4 +173,6 @@ class BladekitViewRegistrar
             Blade::componentNamespace($namespace, $prefix);
         }
     }
+
+
 }
