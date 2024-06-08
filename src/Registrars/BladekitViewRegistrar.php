@@ -17,14 +17,14 @@ use Devinci\Bladekit\Views\Partials\Navbar;
 
 use Devinci\Bladekit\Views\UiCore\Button;
 use Devinci\Bladekit\Views\UiCore\Dialog;
+use Devinci\Bladekit\Views\UiCore\MenuDropdown;
 use Devinci\Bladekit\Views\UiCore\Modal;
 use Devinci\Bladekit\Views\UiCore\InlineCode;
 
 
 use Devinci\Bladekit\Views\Widgets\PageHeader;
 use Devinci\Bladekit\Views\Widgets\CodeSnippet;
-
-
+use Devinci\Bladekit\Views\Widgets\TabPanel;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\View;
 
@@ -55,21 +55,22 @@ class BladekitViewRegistrar
         View::addNamespace('bladekit-uicore', base_path(__DIR__ . '/../../resources/views/uicore'));
         View::addNamespace('bladekit-partials', base_path(__DIR__ . '/../../resources/views/partials'));
 
+
         Blade::anonymousComponentNamespace(__DIR__."/../../resources/views/layouts");
         Blade::anonymousComponentNamespace(__DIR__."/../../resources/views/partials");
         Blade::anonymousComponentNamespace(__DIR__."/../../resources/views/uicore");
         Blade::anonymousComponentNamespace(__DIR__." /../../resources/views/widgets");
 
-
-
         Blade::component('bladekit-uicore::modal',Modal::class);
         Blade::component('bladekit-uicore::button',Button::class);
         Blade::component('bladekit-uicore::dialog' ,Dialog::class);
         Blade::component('bladekit-uicore::inline-code' ,InlineCode::class);
+        Blade::component('bladekit-uicore::menu-dropdown' ,MenuDropdown::class);
 
         Blade::component('bladekit-widgets::page-header', PageHeader::class);
         Blade::component('bladekit-widgets::code-snippet', CodeSnippet::class);
-
+        Blade::component('bladekit-widgets::tab-panel', TabPanel::class);
+        
         Blade::component('bladekit-partials::header', Header::class);
         Blade::component('bladekit-partials::footer', Footer::class);
         Blade::component('bladekit-partials::navbar', Navbar::class);
@@ -86,12 +87,10 @@ class BladekitViewRegistrar
         Blade::component('bladekit::stack.toggle-switch', ToggleSwitch::class);
         Blade::component('bladekit::stack.anchor-row',  AnchorRow::class);
 
+        View::addNamespace('bladekit', __DIR__.'/../resources/views');
 
-
-
-
-        $this->registerViews();
-//        $this->registerComponentNamespaces();
+        #$this->registerViews();
+        $this->registerComponentNamespaces();
     }
 
     /**

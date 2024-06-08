@@ -78,3 +78,6 @@ bladekit_components.yamlCHANGELOG.md
 /.sandbox/
 _demo.CHANGELOG.md
 dist
+resources~
+git_log_summary.txt
+bladekit.json

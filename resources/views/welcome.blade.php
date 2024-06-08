@@ -292,7 +292,7 @@
                 />
 
                 <x-mods.tab-panel :tabs="['Cat1', 'Cat2']">
-                    <x-slot name="tabCat1">
+                    <x-panel name="tabCat1">
                         <p>Content for Tab 1</p>
                     </x-slot>
                     <x-slot name="tabCat2">

@@ -69,17 +69,14 @@
         }
         .tab-content {
             padding: 20px;
-            border-radius: 10px;
-            border: 1px solid #ddd;
+            height: 250px;
             border-top: none;
         }
+     
         .tab-pane {
             display: none;
-        }
-        .tab-pane {
-            display: none;
-            height: 140px;
-            border: 3px solid transparent;
+            height: 250px;
+            border: 1px solid transparent; /* Initial transparent border */
             transition: border-color 0.3s ease; /* Smooth transition for border color */
         }
         .tab-pane.active {
