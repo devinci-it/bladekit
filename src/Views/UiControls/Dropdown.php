@@ -8,6 +8,6 @@ class Dropdown extends Component
 {
     public function render()
     {
-        return view('bladekit:: uicontrols.dropdown');
+        return view('bladekit::uicontrols.dropdown');
     }
 }

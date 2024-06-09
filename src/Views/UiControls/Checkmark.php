@@ -8,6 +8,6 @@ class Checkmark extends Component
 {
     public function render()
     {
-        return view('bladekit:: uicontrols.checkmark');
+        return view('bladekit::uicontrols.checkmark');
     }
 }

@@ -8,6 +8,6 @@ class Text extends Component
 {
     public function render()
     {
-        return view('bladekit:: uicontrols.text');
+        return view('bladekit::uicontrols.text');
     }
 }

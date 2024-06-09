@@ -8,6 +8,6 @@ class MenuItem extends Component
 {
     public function render()
     {
-        return view('bladekit::uicontrols.menuitem');
+        return view('bladekit::uicontrols.menu-item');
     }
 }
