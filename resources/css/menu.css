@@ -1,0 +1,36 @@
+.menu {
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    background: #f9f9f9;
+  }
+  
+  .menu-item {
+    margin-bottom: 10px;
+  }
+  
+  .toggle, .dropdown, .radio, .checkmark {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+  }
+  
+  .toggle input, .checkmark input {
+    margin-right: 10px;
+  }
+  
+  .dropdown select {
+    margin-left: 10px;
+  }
+  
+  .radio label {
+    margin-right: 10px;
+  }
+  
+  .text {
+    margin: 0;
+  }
+  

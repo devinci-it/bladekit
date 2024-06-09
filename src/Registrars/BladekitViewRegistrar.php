@@ -28,6 +28,15 @@ use Devinci\Bladekit\Views\Widgets\TabPanel;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\View;
 
+use Devinci\Bladekit\Views\UiControls\Checkmark;
+use Devinci\Bladekit\Views\UiControls\Dropdown;
+use Devinci\Bladekit\Views\UiControls\Menu;
+use Devinci\Bladekit\Views\UiControls\MenuItem;
+use Devinci\Bladekit\Views\UiControls\Radio;
+use Devinci\Bladekit\Views\UiControls\Text;
+use Devinci\Bladekit\Views\UiControls\Toggle;
+
+
 class BladekitViewRegistrar
 {
     protected $config;
@@ -54,12 +63,14 @@ class BladekitViewRegistrar
         View::addNamespace('bladekit-layouts', base_path(__DIR__.'/../../resources/views/layouts'));
         View::addNamespace('bladekit-uicore', base_path(__DIR__ . '/../../resources/views/uicore'));
         View::addNamespace('bladekit-partials', base_path(__DIR__ . '/../../resources/views/partials'));
+        View::addNamespace('bladekit-uicontrols', base_path(__DIR__ . '/../../resources/views/uicontrols'));
 
 
         Blade::anonymousComponentNamespace(__DIR__."/../../resources/views/layouts");
         Blade::anonymousComponentNamespace(__DIR__."/../../resources/views/partials");
         Blade::anonymousComponentNamespace(__DIR__."/../../resources/views/uicore");
         Blade::anonymousComponentNamespace(__DIR__." /../../resources/views/widgets");
+        Blade::anonymousComponentNamespace(__DIR__." /../../resources/views/uicontrols");
 
         Blade::component('bladekit-uicore::modal',Modal::class);
         Blade::component('bladekit-uicore::button',Button::class);
@@ -77,6 +88,7 @@ class BladekitViewRegistrar
 
 
 
+
         Blade::component('bladekit-layouts:blade-layout',BladeLayout::class);
         Blade::component('bladekit-layouts::grid', Grid::class);
         Blade::component('bladekit-layouts::flex',Flex::class);
@@ -86,6 +98,15 @@ class BladekitViewRegistrar
         Blade::component('bladekit::stack.toggle-switch', ToggleSwitch::class);
         Blade::component('bladekit::stack.toggle-switch', ToggleSwitch::class);
         Blade::component('bladekit::stack.anchor-row',  AnchorRow::class);
+        
+        Blade::component('bladekit-uicontrols::menu', Menu::class);
+        Blade::component('bladekit-uicontrols::menu-item',  MenuItem::class);
+        Blade::component('bladekit-uicontrols::toggle',  Toggle::class);
+        Blade::component('bladekit-uicontrols::dropdown',  Dropdown::class);
+        Blade::component('bladekit-uicontrols::text',  Text::class);
+        Blade::component('bladekit-uicontrols::radio',  Radio::class);
+        Blade::component('bladekit-uicontrols::checkmark',  Checkmark::class);
+
 
         View::addNamespace('bladekit', __DIR__.'/../resources/views');
 
