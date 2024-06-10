@@ -4,108 +4,81 @@ namespace Devinci\Bladekit\Console\Commands\DevKit;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\View;
 
 class RegisterView extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'bladekit:register-view {name} {--namespace=} {--add-namespace}';
+    protected $signature = 'bladekit:register-view 
+                            {--namespace= : The namespace to register}
+                            {--anon= : The namespace for anonymous component}
+                            {--component= : The namespace and class for component}';
 
-
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Automatically register a new Views Component';
+    protected $description = 'Registers BladeKit view namespaces and components';
 
     public function handle()
     {
-        $componentName = $this->argument('name');
+        $filePath = __DIR__.'/../../../Registrars/BladekitViewRegistrar.php.test'; // Adjust the path accordingly
+         if (!File::exists($filePath)) {
+            $this->error('BladekitViewRegistrar.php not found.');
+            return;
+        }
+        $contents = File::get($filePath);
+
         $namespace = $this->option('namespace');
+        $anonNamespace = $this->option('anon');
+        $component = $this->option('component');
+     // Split the contents into sections based on the delimiters
+     $sections = explode('// *', $contents);
 
-        // If namespace is not provided, prompt the user
-        if (!$namespace) {
-            $namespace = $this->ask('Enter the component namespace (e.g., BladeLayout\\Views\\Components\\):');
-        }
+     // Append the lines of code to the respective sections
+     $sections[1] .= $this->getNamespaceCode($namespace);
+     $sections[2] .= $this->getAnonymousNamespaceCode($anonNamespace);
+     $sections[3] .= $this->getComponentCode($component);
 
-        // Validate namespace format
-        if (!preg_match('/^[a-zA-Z_\x80-\xff][a-zA-Z0-9_\x80-\xff\\\\]*$/', $namespace)) {
-            $this->error('Invalid namespace format.');
-            return;
-        }
+     // Put the sections back together
+     $newContent = implode('// *', $sections);
 
-        // Prompt for new namespace if it doesn't end with \
-        while (substr($namespace, -1) !== '\\') {
-            $namespace = $this->ask('Namespace must end with \\, please re-enter the component namespace:');
-        }
+     // Write the modified content back to the file
+     File::put($filePath, $newContent);
 
-        $registrarPath = app_path('BladekitViewRegistrar.php');
+     $this->info('BladeKit view namespaces and components registered successfully.');
+ }
 
-        // Check if the registrar file exists
-        if (!File::exists($registrarPath)) {
-            $this->error('BladekitViewRegistrar.php does not exist.');
-            return;
-        }
+ protected function getNamespaceCode($namespace)
+ {
+     if (!$namespace) {
+         return '';
+     }
 
-        // Append registration code to the registrar file
-        $registrationCode = "\nBlade::component('{$namespace}{$componentName}', {$namespace}\\{$componentName}::class);\n";
-        File::append($registrarPath, $registrationCode);
+     $normalizedNamespace = str_replace([' ', '-'], '', strtolower($namespace));
+     return "
+    View::addNamespace('bladekit-{$normalizedNamespace}', base_path(__DIR__ . '/../../resources/views/{$normalizedNamespace}'));
+";
+ }
 
-        $this->info("Views Component {$componentName} has been registered under namespace {$namespace}.");
+ protected function getAnonymousNamespaceCode($anonNamespace)
+ {
+     if (!$anonNamespace) {
+         return '';
+     }
 
-        // Add new namespace if --add-namespace option is provided
-        if ($this->option('add-namespace')) {
-            $this->addNamespace($namespace);
-            $this->info("Namespace {$namespace} has been added.");
-        }
-    }
+     $normalizedNamespace = str_replace([' ', '-'], '', strtolower($anonNamespace));
+     return "
+    Blade::anonymousComponentNamespace(__DIR__ . '/../../resources/views/{$normalizedNamespace}');
+";
+ }
 
-    private function addNamespace($namespace)
-    {
-        // Determine the directory path for the namespace
-        $directory = str_replace('\\', '/', $namespace);
-        $directory = strtolower($directory); // Convert to lowercase for consistency
+ protected function getComponentCode($component)
+ {
+     if (!$component) {
+         return '';
+     }
 
-        // Create the directory if it doesn't exist
-        $path = base_path("resources/views/{$directory}");
-        if (!File::isDirectory($path)) {
-            File::makeDirectory($path, 0755, true);
-        }
+     [$namespace, $class] = explode(' ', $component);
+     $normalizedNamespace = str_replace([' ', '-'], '', strtolower($namespace));
+     $normalizedClass = str_replace(' ', '-', strtolower($class));
 
-        // Create the blade component view if it doesn't exist
-        $bladeViewPath = $path . "/{$componentName}.blade.php";
-        if (!File::exists($bladeViewPath)) {
-            File::put($bladeViewPath, "<!-- Blade component view for {$componentName} -->");
-            $this->info("Blade component view for {$componentName} created at {$bladeViewPath}");
-        }
-
-        // Create the component PHP class if it doesn't exist
-        $componentClassPath = app_path("Views/Components/{$directory}/{$componentName}.php");
-        if (!File::exists($componentClassPath)) {
-            $componentStub = File::get(__DIR__ . '/stubs/component.stub');
-            $componentStub = str_replace('{{namespace}}', $namespace, $componentStub);
-            $componentStub = str_replace('{{componentName}}', $componentName, $componentStub);
-            File::put($componentClassPath, $componentStub);
-            $this->info("Component class for {$componentName} created at {$componentClassPath}");
-        }
-
-        // Create the blade component view if it doesn't exist
-        $bladeViewPath = $path . "/{$componentName}.blade.php";
-        if (!File::exists($bladeViewPath)) {
-            $bladeStub = File::get(__DIR__ . '/stubs/blade.stub');
-            $bladeStub = str_replace('{{componentName}}', $componentName, $bladeStub);
-            File::put($bladeViewPath, $bladeStub);
-            $this->info("Blade component view for {$componentName} created at {$bladeViewPath}");
-        }
-
-
-        // Add the namespace
-        View::addNamespace($directory, $path);
-    }
+     return "
+    Blade::component('bladekit-{$normalizedNamespace}::{$normalizedClass}', \\Devinci\\Bladekit\\Views\\{$class}::class);
+";
+ }
 }
-
