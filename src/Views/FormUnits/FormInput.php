@@ -1,4 +1,4 @@
-
+<?php
 // app/View/Components/FormInput.php
 
 namespace App\View\Components;

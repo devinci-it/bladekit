@@ -8,17 +8,21 @@ class FileUpload extends Component
 {
     public $name;
     public $showPreview;
-    public $action; // Destination path for file uploads
+    public $action; 
+    public $multiple; 
+    public $acceptedTypes; 
 
-    public function __construct($name, $action, $showPreview = false)
+    public function __construct($name, $action, $showPreview = false, $multiple = false, $acceptedTypes = '')
     {
         $this->name = $name;
         $this->action = $action;
         $this->showPreview = $showPreview;
+        $this->multiple = $multiple;
+        $this->acceptedTypes = $acceptedTypes;
     }
 
     public function render()
     {
-        return view('components.file-upload');
+        return view('bladekit::form-units.file-upload');
     }
 }
