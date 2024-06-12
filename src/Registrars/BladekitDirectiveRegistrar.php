@@ -26,6 +26,7 @@ class BladekitDirectiveRegistrar
         self::registerScriptDirective();
         self::registerIconDirective();
         self::registerBladekitAssetDirective();
+        self::registerBladekitSVGDirective();
 
     }
 
@@ -130,7 +131,6 @@ class BladekitDirectiveRegistrar
         });
     }
 
-
     /**
      * Register the @bladekitScript directive.
      *
@@ -159,8 +159,6 @@ class BladekitDirectiveRegistrar
         });
     }
 
-
-
     protected static function registerBladekitAssetDirective()
     {
         Blade::directive('bladekitAsset', function ($expression) {
@@ -172,7 +170,6 @@ class BladekitDirectiveRegistrar
             return $imagePath ? "<img src=\"$imagePath\" alt=\"$expression\">" : '';
         });
     }
-
     public static function getBladekitAsset($name)
     {
         $directory = public_path('vendor/bladekit/images');
@@ -185,6 +182,39 @@ class BladekitDirectiveRegistrar
         }
 
         return null;
+    }
+    protected static function registerBladekitSVGDirective()
+    {
+        Blade::directive('bladekitSVG', function ($expression) {
+            $params = self::parseExpression($expression);
+            $name = $params[0];
+            $size = $params[1] ?? null;
+            $fill = $params[2] ?? null;
+
+            $imagePath = self::getBladekitAsset($name);
+            if ($imagePath) {
+                $svgContent = file_get_contents(public_path('vendor/bladekit/images/' . basename($imagePath)));
+
+                if ($size) {
+                    $svgContent = preg_replace('/(width|height)="[^"]*"/', '', $svgContent);
+                    $svgContent = preg_replace('/<svg/', '<svg width="' . $size . '" height="' . $size . '"', $svgContent);
+                }
+
+                if ($fill) {
+                    $svgContent = preg_replace('/fill="[^"]*"/', '', $svgContent);
+                    $svgContent = preg_replace('/<svg/', '<svg fill="' . $fill . '"', $svgContent);
+                }
+
+                return $svgContent;
+            }
+
+            return '';
+        });
+    }
+
+    protected static function parseExpression($expression)
+    {
+        return explode(',', str_replace(['(', ')', ' ', '\''], '', $expression));
     }
     
 }
