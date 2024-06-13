@@ -25,6 +25,7 @@ class BladekitDirectiveRegistrar
         self::registerStylesDirective();
         self::registerScriptDirective();
         self::registerIconDirective();
+        self::registerBladekitAssetDirective();
 
     }
 
@@ -158,4 +159,32 @@ class BladekitDirectiveRegistrar
         });
     }
 
+
+
+    protected static function registerBladekitAssetDirective()
+    {
+        Blade::directive('bladekitAsset', function ($expression) {
+            // Removing quotes around the expression if they exist
+            $expression = trim($expression, "'\"");
+
+            $imagePath = self::getBladekitAsset($expression);
+
+            return $imagePath ? "<img src=\"$imagePath\" alt=\"$expression\">" : '';
+        });
+    }
+
+    public static function getBladekitAsset($name)
+    {
+        $directory = public_path('vendor/bladekit/images');
+        $files = File::files($directory);
+
+        foreach ($files as $file) {
+            if (strpos($file->getFilename(), $name) === 0) {
+                return asset('vendor/bladekit/images/' . $file->getFilename());
+            }
+        }
+
+        return null;
+    }
+    
 }

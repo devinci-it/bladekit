@@ -81,3 +81,4 @@ dist
 resources~
 git_log_summary.txt
 bladekit.json
+src/Registrars/BladekitViewRegistrar.php.test

@@ -58,48 +58,49 @@ class BladekitViewRegistrar
      */
     public function register()
     {
-        View::addNamespace('bladekit', __DIR__.'/../resources/views');
-        View::addNamespace('bladekit-widgets', base_path(__DIR__.'/../../resources/views/widgets'));
-        View::addNamespace('bladekit-layouts', base_path(__DIR__.'/../../resources/views/layouts'));
+
+
+        View::addNamespace('bladekit', __DIR__ . '/../../resources/views');
+        View::addNamespace('bladekit-form', __DIR__ . '/../../resources/views/form-units');
+        View::addNamespace('bladekit-widgets', base_path(__DIR__ . '/../../resources/views/widgets'));
+        View::addNamespace('bladekit-layouts', base_path(__DIR__ . '/../../resources/views/layouts'));
         View::addNamespace('bladekit-uicore', base_path(__DIR__ . '/../../resources/views/uicore'));
         View::addNamespace('bladekit-partials', base_path(__DIR__ . '/../../resources/views/partials'));
         View::addNamespace('bladekit-uicontrols', base_path(__DIR__ . '/../../resources/views/uicontrols'));
-        View::addNamespace('bladekit-form-units', base_path(__DIR__ . '/../../resources/views/form-units'));
+        // *
 
-        Blade::anonymousComponentNamespace(__DIR__."/../../resources/views/layouts");
-        Blade::anonymousComponentNamespace(__DIR__."/../../resources/views/partials");
-        Blade::anonymousComponentNamespace(__DIR__."/../../resources/views/uicore");
-        Blade::anonymousComponentNamespace(__DIR__." /../../resources/views/widgets");
-        Blade::anonymousComponentNamespace(__DIR__." /../../resources/views/uicontrols");
-        Blade::anonymousComponentNamespace(__DIR__." /../../resources/views/form-units");
+        Blade::anonymousComponentNamespace(__DIR__ . "/../../resources/views/layouts");
+        Blade::anonymousComponentNamespace(__DIR__ . "/../../resources/views/partials");
+        Blade::anonymousComponentNamespace(__DIR__ . "/../../resources/views/uicore");
+        Blade::anonymousComponentNamespace(__DIR__ . " /../../resources/views/widgets");
+        Blade::anonymousComponentNamespace(__DIR__ . " /../../resources/views/uicontrols");
+        Blade::anonymousComponentNamespace(__DIR__ . " /../../resources/views/form-units");
+        // *
 
-        Blade::component('bladekit-uicore::modal',Modal::class);
-        Blade::component('bladekit-uicore::button',Button::class);
-        Blade::component('bladekit-uicore::dialog' ,Dialog::class);
-        Blade::component('bladekit-uicore::inline-code' ,InlineCode::class);
-        Blade::component('bladekit-uicore::menu-dropdown' ,MenuDropdown::class);
+        Blade::component('bladekit-uicore::modal', Modal::class);
+        Blade::component('bladekit-uicore::button', Button::class);
+        Blade::component('bladekit-uicore::dialog', Dialog::class);
+        Blade::component('bladekit-uicore::inline-code', InlineCode::class);
+        Blade::component('bladekit-uicore::menu-dropdown', MenuDropdown::class);
 
         Blade::component('bladekit-widgets::page-header', PageHeader::class);
         Blade::component('bladekit-widgets::code-snippet', CodeSnippet::class);
         Blade::component('bladekit-widgets::tab-panel', TabPanel::class);
-        
+
         Blade::component('bladekit-partials::header', Header::class);
         Blade::component('bladekit-partials::footer', Footer::class);
         Blade::component('bladekit-partials::navbar', Navbar::class);
 
-
-
-        Blade::component('bladekit-layouts::interstitial',Interstitial::class);
-        Blade::component('bladekit-layouts:blade-layout',BladeLayout::class);
+        Blade::component('bladekit-layouts::interstitial', Interstitial::class);
+        Blade::component('bladekit-layouts:blade-layout', BladeLayout::class);
         Blade::component('bladekit-layouts::grid', Grid::class);
-        Blade::component('bladekit-layouts::flex',Flex::class);
-
+        Blade::component('bladekit-layouts::flex', Flex::class);
 
         Blade::component('bladekit::stack.toggle-switch', ToggleSwitch::class);
         Blade::component('bladekit::stack.toggle-switch', ToggleSwitch::class);
         Blade::component('bladekit::stack.toggle-switch', ToggleSwitch::class);
         Blade::component('bladekit::stack.anchor-row',  AnchorRow::class);
-        
+
         Blade::component('bladekit-uicontrols::menu', Menu::class);
         Blade::component('bladekit-uicontrols::menu-item',  MenuItem::class);
         Blade::component('bladekit-uicontrols::toggle',  Toggle::class);
@@ -108,12 +109,8 @@ class BladekitViewRegistrar
         Blade::component('bladekit-uicontrols::radio',  Radio::class);
         Blade::component('bladekit-uicontrols::checkmark',  Checkmark::class);
 
-        // Form Units
-        Blade::component('bladekit-form-units::file-upload', FileUpload::class);
-
-
-
-        View::addNamespace('bladekit', __DIR__.'/../resources/views');
+        Blade::component('bladekit-form::file-upload', FileUpload::class);
+        // *
 
         #$this->registerViews();
         $this->registerComponentNamespaces();
@@ -173,6 +170,4 @@ class BladekitViewRegistrar
             Blade::componentNamespace($namespace, $prefix);
         }
     }
-
-
 }
