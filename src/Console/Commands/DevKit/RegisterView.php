@@ -16,7 +16,7 @@ class RegisterView extends Command
 
     public function handle()
     {
-        $filePath = __DIR__.'/../../../Registrars/BladekitViewRegistrar.php.test'; // Adjust the path accordingly
+        $filePath = __DIR__.'/../../../Registrars/BladekitViewRegistrar.php'; // Adjust the path accordingly
          if (!File::exists($filePath)) {
             $this->error('BladekitViewRegistrar.php not found.');
             return;

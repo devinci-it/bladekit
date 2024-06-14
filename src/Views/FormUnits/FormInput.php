@@ -1,7 +1,7 @@
 <?php
 // app/View/Components/FormInput.php
 
-namespace App\View\Components;
+namespace Devinci\Bladekit\Views\FormUnits;
 
 use Illuminate\View\Component;
 

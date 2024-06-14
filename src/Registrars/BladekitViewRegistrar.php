@@ -59,6 +59,7 @@ class BladekitViewRegistrar
     public function register()
     {
 
+        // *
 
         View::addNamespace('bladekit', __DIR__ . '/../../resources/views');
         View::addNamespace('bladekit-form', __DIR__ . '/../../resources/views/form-units');
@@ -110,6 +111,8 @@ class BladekitViewRegistrar
         Blade::component('bladekit-uicontrols::checkmark',  Checkmark::class);
 
         Blade::component('bladekit-form::file-upload', FileUpload::class);
+        Blade::component('bladekit-form::multi-step-form', \Devinci\Bladekit\Views\FormUnits\MultiStepForm::class);
+    
         // *
 
         #$this->registerViews();
@@ -171,3 +174,4 @@ class BladekitViewRegistrar
         }
     }
 }
+
