@@ -36,7 +36,9 @@ use Devinci\Bladekit\Views\UiControls\Radio;
 use Devinci\Bladekit\Views\UiControls\Text;
 use Devinci\Bladekit\Views\UiControls\Toggle;
 
-
+use Devinci\Bladekit\Views\FormUnits\MultistepForm;
+use Devinci\Bladekit\Views\FormUnits\FormGroup;
+use Devinci\Bladekit\Views\FormUnits\FormInput;
 class BladekitViewRegistrar
 {
     protected $config;
@@ -111,7 +113,9 @@ class BladekitViewRegistrar
         Blade::component('bladekit-uicontrols::checkmark',  Checkmark::class);
 
         Blade::component('bladekit-form::file-upload', FileUpload::class);
-        Blade::component('bladekit-form::multi-step-form', \Devinci\Bladekit\Views\FormUnits\MultiStepForm::class);
+        Blade::component('bladekit-form::form-input', FormInput::class);
+        Blade::component('bladekit-form::form-group', FormGroup::class);
+        Blade::component('bladekit-form::multistep-form', MultistepForm::class);    
     
         // *
 

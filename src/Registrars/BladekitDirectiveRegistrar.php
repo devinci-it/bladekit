@@ -193,8 +193,8 @@ class BladekitDirectiveRegistrar
 
             $imagePath = self::getBladekitAsset($name);
             if ($imagePath) {
-                $assetPath = asset(public_path('vendor/bladekit/icons/' . basename($imagePath)));
-                $svgContent = file_get_contents($assetPath);
+                $assetPath =$imagePath;
+                 $svgContent = file_get_contents(asset($assetPath));
 
                 if ($size) {
                     $svgContent = preg_replace('/(width|height)="[^"]*"/', '', $svgContent);

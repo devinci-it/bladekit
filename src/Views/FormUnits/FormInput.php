@@ -48,6 +48,6 @@ class FormInput extends Component
      */
     public function render()
     {
-        return view('components.form-input');
+        return view('bladekit::form-units.form-input');
     }
 }

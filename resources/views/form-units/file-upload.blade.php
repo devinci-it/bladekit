@@ -1,334 +1,302 @@
+<div {{ $attributes->merge(['class' => 'file-upload-component grid']) }} data-name="{{ $name }}"
+    data-show-preview="{{ $showPreview ? 'true' : 'false' }}" data-multiple="{{ $multiple ? 'true' : 'false' }}"
+    data-accepted-types="{{ $acceptedTypes }}" data-max-size="{{ $maxSize }}">
 
+    <form style="paddi"action="{{ $action }}" method="post" enctype="multipart/form-data">
+        @csrf
 
-<div {{ $attributes->merge(['class' => 'file-upload-component table-component flex']) }} 
-    data-name="{{ $name }}" 
-    data-show-preview="{{ $showPreview? 'true' : 'false'}}" 
-    data-multiple="{{ $multiple ? 'true' : 'false' }}" 
-    data-accepted-types="{{ $acceptedTypes }}">
-   <form action="{{ $action }}" method="post" enctype="multipart/form-data">
-       @csrf
+        <input type="file" id="file-input-{{ $name }}" name="{{ $name }}[]"
+            {{ $multiple ? 'multiple' : '' }} style="display: none;" accept="{{ $acceptedTypes }}">
 
-       <!-- Hidden input for file upload -->
-       <input type="file" id="file-input-{{ $name }}" name="{{ $name }}[]" {{ $multiple ? 'multiple' : '' }} style="display: none;" accept="{{ $acceptedTypes }}">
+        <div class="file-drop-area" id="file-drop-area-{{ $name }}">
+            @bladekitAsset('upload')
 
-       <!-- Custom file input label -->
-       <label for="file-input-{{ $name }}" class="file-input-label" id="file-input-label-{{ $name }}">Upload File</label>
-
-       <!-- File drop area -->
-       <div class="file-drop-area" id="file-drop-area-{{ $name }}">
-        <svg width="71" height="102" viewBox="0 0 71 102" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M71 99.4426C71 100.547 70.1046 101.443 69 101.443L2.00001 101.443C0.895439 101.443 7.5944e-06 100.547 7.55124e-06 99.4426L3.74329e-06 1.99994C3.70013e-06 0.895374 0.895434 -5.49064e-05 2 -5.5003e-05L50.9933 -5.92861e-05L71 14.6818L71 99.4426Z" fill="#C7C7C7"/>
-            <path d="M51.352 16.9072L51.352 0.00011399L70.7128 14.5219L51.352 16.9072Z" fill="#E9E2E2"/>
-            </svg>
-
-           <p class="caption-text">Drag & drop files here or click to select files</p>
-
-           <!-- Footer displaying accepted file types and size -->
-           <div class="file-drop-footer">
-               <p class="caption-text">{{ $acceptedTypes }}</p>
-               <p class="caption-text">Max file size: 10MB</p>
-           </div>
-       </div>
-
-    
-
-       <!-- Custom upload button -->
-       <button type="submit" class="btn">Upload Files</button>
-   </form>
-      <!-- File preview and upload area -->
-      <div class="file-upload-content">
-        <div class="file-preview">
-            <table>
-                <thead>
-                    <tr>
-                        <th>File Name</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody class="file-preview-body">
-                    <!-- Files will be displayed here -->
-                </tbody>
-            </table>
+            {{-- @bladekitSVG('upload', 50, '#6c757d') --}}
+            <p class="caption-text" style="padding-top: 20px; font-size:.8rem;">Drag & drop or click to select files</p>
         </div>
 
-        <!-- Upload progress bar -->
-        <div class="upload-progress">
-            <!-- Upload progress will be displayed here -->
+        <div class="selected-files" id="selected-files-{{ $name }}">
+            <ul id="file-list-{{ $name }}"></ul>
         </div>
-    </div>
+
+        <div class="file-footer" id="file-footer-{{ $name }}">
+            <p class="footer-text"></p>
+        </div>
+
+        <button type="submit" class="btn" style="display: none;">Upload</button>
+    </form>
 </div>
 
 @once
-@push('scripts')
-<script>
- 
-// FileUploadComponent class definition
-class FileUploadComponent {
-    constructor(element) {
-        if (!element) {
-            console.error('FileUploadComponent: Element not found. Make sure to provide a valid element.');
-            return;
+    @push('scripts')
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                class FileUploadComponent {
+                    constructor(element) {
+                        this.element = element;
+                        this.name = element.dataset.name;
+                        this.showPreview = element.dataset.showPreview === 'true';
+                        this.multiple = element.dataset.multiple === 'true';
+                        this.acceptedTypes = element.dataset.acceptedTypes || '';
+                        this.maxSize = element.dataset.maxSize || '';
+                        this.fileInput = element.querySelector('input[type="file"]');
+                        this.fileDropArea = element.querySelector('.file-drop-area');
+                        this.fileList = element.querySelector(`#file-list-${this.name}`);
+                        this.fileFooter = element.querySelector(`#file-footer-${this.name} .footer-text`);
+
+                        this.fileInput.addEventListener('change', this.handleFiles.bind(this));
+                        this.fileDropArea.addEventListener('drop', this.handleDrop.bind(this));
+                        this.fileDropArea.addEventListener('dragover', this.handleDragOver.bind(this));
+                        this.fileDropArea.addEventListener('click', () => this.fileInput.click());
+
+                        this.fileList.addEventListener('click', this.handleFileClick.bind(this));
+
+                        this.updateFooter();
+                    }
+
+                    handleFiles(event) {
+                        const files = event.target.files;
+                        this.displayFiles(files);
+                    }
+
+                    handleDrop(event) {
+                        event.preventDefault();
+                        const files = event.dataTransfer.files;
+                        this.fileInput.files = files;
+                        this.displayFiles(files);
+                    }
+
+                    handleDragOver(event) {
+                        event.preventDefault();
+                    }
+                    displayFiles(files) {
+    Array.from(files).forEach(file => {
+        const listItem = document.createElement('li');
+        listItem.classList.add('file-list-item');
+        listItem.dataset.fileName = file.name;
+
+        let icon;
+        if (file.type.startsWith('image/')) {
+            icon = '@bladekitIcon('image.svg')';
+        } else if (file.type.startsWith('audio/')) {
+            icon = '@bladekitIcon('audio.svg')';
+        } else if (file.type.startsWith('video/')) {
+            icon = '@bladekitIcon('video.svg')';
+        } else {
+            icon = '@bladekitIcon('file.svg')';
         }
+        const trashIcon = '@bladekitAsset("del")';
 
-        this.element = element;
-        this.name = element.dataset.name;
-        this.showPreview = element.dataset.showPreview === 'true';
-        this.multiple = element.dataset.multiple === 'true';
-        this.acceptedTypes = element.dataset.acceptedTypes || '';
-        this.fileInput = this.element.querySelector('input[type="file"]');
-        this.fileDropArea = this.element.querySelector('.file-drop-area');
-        this.filePreview = this.element.querySelector('.file-preview-body');
-        this.fileDropFooter = this.element.querySelector('.file-drop-footer');
 
-        if (!this.fileInput || !this.fileDropArea || !this.filePreview || !this.fileDropFooter) {
-            console.error('FileUploadComponent: Required elements not found. Make sure your HTML structure is correct.');
-            return;
-        }
+        listItem.innerHTML = `
+            <div class="file-info" style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <div class="file-icon">${icon}</div>
+                    <span class="file-name">${file.name}</span>
+                    <span class="file-size">${(file.size / 1024 / 1024).toFixed(2)} MB</span>
+                </div>
+            </div>
+        <button class="remove-file-btn btn">${trashIcon}</button>
 
-        // Add a class to the main element
-        this.element.classList.add('file-upload-component-initialized');
-
-        // Bind event handlers
-        this.fileInput.addEventListener('change', this.handleFiles.bind(this));
-        this.fileDropArea.addEventListener('drop', this.handleDrop.bind(this));
-        this.fileDropArea.addEventListener('dragover', this.handleDragOver.bind(this));
-        this.fileDropArea.addEventListener('click', () => {
-            this.fileInput.click();
-        });
-
-        // Display accepted file types and size
-        this.fileDropFooter.innerHTML = `
-            <p>Accepted types: ${this.acceptedTypes}</p>
-            <p>Max file size: 10MB</p>
         `;
+        
+        this.fileList.appendChild(listItem);
 
-        console.log('FileUploadComponent initialized:', this.name, this.showPreview, this.multiple, this.acceptedTypes);
-
-        // Initial placeholder if no files are selected
-        if (this.showPreview) {
-            this.displayPlaceholder();
-        }
-    }
-
-    handleFiles(event) {
-        const files = event.target.files;
-        console.log('Files selected:', files);
-        if (this.showPreview) {
-            this.clearFilePreview();
-            if (files.length > 0) {
-                this.displayFiles(files);
-            } else {
-                this.displayPlaceholder();
-            }
-        }
-    }
-
-    handleDrop(event) {
-        event.preventDefault();
-        const files = event.dataTransfer.files;
-        console.log('Files dropped:', files);
-        this.addFilesToInput(files);
-        if (this.showPreview) {
-            this.clearFilePreview();
-            if (files.length > 0) {
-                this.displayFiles(files);
-            } else {
-                this.displayPlaceholder();
-            }
-        }
-    }
-
-    handleDragOver(event) {
-        event.preventDefault();
-    }
-
-    addFilesToInput(files) {
-        const dataTransfer = new DataTransfer();
-        for (let file of files) {
-            dataTransfer.items.add(file);
-        }
-        this.fileInput.files = dataTransfer.files;
-    }
-
-    displayFiles(files) {
-        for (let file of files) {
-            this.displayFile(file);
-        }
-    }
-
-    displayFile(file) {
-        const fileElement = document.createElement('tr');
-        const fileNameCell = document.createElement('td');
-        const actionCell = document.createElement('td');
-        const removeButton = document.createElement('span');
-
-        fileNameCell.textContent = file.name;
-        removeButton.textContent = 'Remove';
-        removeButton.classList.add('remove-file');
-        removeButton.addEventListener('click', () => {
-            fileElement.remove();
-            this.removeFile(file);
-        });
-
-        actionCell.appendChild(removeButton);
-        fileElement.appendChild(fileNameCell);
-        fileElement.appendChild(actionCell);
-
-        this.filePreview.appendChild(fileElement);
-    }
-
-    displayPlaceholder() {
-        const placeholderElement = document.createElement('tr');
-        const placeholderCell = document.createElement('td');
-
-        placeholderCell.textContent = 'No files selected';
-        placeholderCell.colSpan = 2; // Merges the cell into both columns
-        placeholderElement.appendChild(placeholderCell);
-
-        this.filePreview.appendChild(placeholderElement);
-    }
-
-    removeFile(file) {
-        // Remove the file from the input
-        const updatedFiles = Array.from(this.fileInput.files).filter(f => f !== file);
-        const dataTransfer = new DataTransfer();
-        updatedFiles.forEach(f => dataTransfer.items.add(f));
-        this.fileInput.files = dataTransfer.files;
-    }
-
-    clearFilePreview() {
-        // Clear existing file preview
-        while (this.filePreview.firstChild) {
-            this.filePreview.removeChild(this.filePreview.firstChild);
-        }
-    }
+        // Add event listener to the "Remove" button
+        const removeButton = listItem.querySelector('.remove-file-btn');
+        removeButton.addEventListener('click', () => this.removeFile(file.name));
+    });
 }
 
-// Instantiate FileUploadComponent when DOM is ready
-document.addEventListener('DOMContentLoaded', function() {
-    const fileUploadComponentElement = document.querySelector('.file-upload-component');
-    if (fileUploadComponentElement) {
-        const fileUploadComponent = new FileUploadComponent(fileUploadComponentElement);
-    } else {
-        console.error('FileUploadComponent: Element with class "file-upload-component" not found.');
-    }
-});
+                    handleFileClick(event) {
+                        const fileListItem = event.target.closest('.file-list-item');
+                        if (fileListItem) {
+                            const fileName = fileListItem.dataset.fileName;
+                            const confirmDelete = confirm(`Remove file ${fileName}?`);
+                            if (confirmDelete) {
+                                this.removeFile(fileName);
+                            }
+                        }
+                    }
 
-</script>
-@endpush
+
+
+
+                    removeFile(fileName) {
+                        const listItem = this.fileList.querySelector(`[data-file-name="${fileName}"]`);
+                        if (listItem) {
+                            this.fileList.removeChild(listItem);
+                        }
+                    }
+
+                    updateFooter() {
+                        let footerText = 'Accepted file types: ';
+                        if (this.acceptedTypes) {
+                            footerText += this.acceptedTypes.split(',').map(type => type.trim()).join(', ');
+                        } else {
+                            footerText += 'All types';
+                        }
+                        if (this.maxSize) {
+                            footerText += ` | Max size: ${this.maxSize} MB`;
+                        }
+                        this.fileFooter.textContent = footerText;
+                    }
+                }
+
+                const fileUploadComponentElements = document.querySelectorAll('.file-upload-component');
+                fileUploadComponentElements.forEach(element => new FileUploadComponent(element));
+            });
+        </script>
+    @endpush
 @endonce
 
-
 @once
-@push('styles')
-<style>
-     .table-header {
-         background-color: rgba(234, 238, 242, 0.5); /* Header background color */
-        border: 1px solid rgb(216, 222, 228); /* Border color */
+    @push('styles')
+        <style>
+            .file-upload-component {
+                display: grid;
+                grid-template-rows: 2fr 3fr 1fr;
+                gap: 10px;
+                padding: 20px;
+                border: 1px solid #e1e4e8;
+                border-radius: 12px;
+                background-color: #f9f9f9;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                margin: 20px auto;
+                max-width: 600px;
+                font-family: 'Arial', sans-serif;
+            }
 
-    }
-    /* Container styles */
-    .file-upload-component {
-        border: 1px solid #ccc;
-        padding: 1rem;
-        border-radius: 5px;
-        width: 100%;
-        max-width: 400px; /* Adjust max-width as needed */
-        margin: auto;
-    }
+            .file-drop-area {
+                width: 100%;
+                border: 2px dashed #6c757d1e;
+                border-radius: 8px;
+                text-align: center;
+                /* padding: 30px; */
+                transition: background-color 0.3s ease;
+                cursor: pointer;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                aspect-ratio: 2;
+                margin: 20px 0;
+            }
 
-    /* Upload button */
-    .upload-button {
-        padding: 0.5rem 1rem;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        background-color: #f8f8f8;
-        cursor: pointer;
-        display: block;
-        margin: 1rem auto;
-    }
+            .file-drop-area:hover {
+                background-color: #e9ecef;
+            }
 
-    /* File drop area */
-    .file-drop-area {
-        cursor: pointer;
-        border: 2px dashed #ccc;
-        padding: 1rem;
-        border-radius: 5px;
-        text-align: center;
-        margin-top: 1rem;
-        position: relative;
-    }
+            .file-drop-area svg {
+                margin-bottom: 10px;
+                color: #6c757d;
+            }
 
-    /* File drop area icon */
-    .file-drop-area svg {
-        width: 80px;
-        height: 60px;
-        margin: 0 auto;
-        display: block;
-    }
+            .caption-text {
+                color: #6c757d;
+                font-size: 16px;
+                margin: 0;
+            }
 
-    /* File drop area caption */
-    .caption-text {
-        margin-top: 0.5rem;
-        color: #777;
-    }
 
-    /* File drop area footer */
-    .file-drop-footer {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        background-color: #f8f8f8;
-        border-top: 1px solid #ccc;
-        padding: 0.5rem;
-        border-radius: 0 0 5px 5px;
-        text-align: center;
-    }
 
-    /* File preview section */
-    .file-upload-content {
-        margin-top: 1rem;
-    }
+            .btn:hover {
+                background-color: #0056b3;
+            }
 
-    /* File preview table */
-    .file-preview table {
-        width: 100%;
-        border-collapse: collapse;
-    }
+            .selected-files {
+                width: 100%;
+                overflow-y: auto;
+            }
 
-    .file-preview th,
-    .file-preview td {
-        padding: 0.5rem;
-        border: 1px solid #ccc;
-        text-align: left;
-    }
+            .selected-files ul {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+            }
 
-    /* Remove file button */
-    .remove-file {
-        cursor: pointer;
-        color: red;
-        text-decoration: underline;
-    }
+            .file-list-item {
+                display: flex;
+                align-items: center;
+                padding: 10px;
+                border: 1px solid #e1e4e8;
+                border-radius: 8px;
+                margin-bottom: 10px;
+                background-color: #ffffff;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                cursor: pointer;
+            }
 
-    /* Upload progress bar */
-    .upload-progress {
-        margin-top: 1rem;
-    }
+            .file-icon {
+                margin-right: 10px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 40px;
+                height: 40px;
+                border-radius: 4px;
+                background-color: #f1f3f5;
+            }
 
-    .progress-bar {
-        width: 0;
-        height: 1rem;
-        background-color: #5cb85c;
-        border-radius: 5px;
-    }
+            .file-info {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+            }
 
-    /* Responsive design */
-    @media (max-width: 600px) {
-        .file-upload-component {
-            max-width: 100%;
-        }
-    }
-</style>
-@endpush
+            .file-name {
+                font-size: 14px;
+                font-weight: 500;
+                color: #343a40;
+            }
+
+            .file-size {
+                font-size: 12px;
+                color: #6c757d;
+            }
+
+            .file-footer {
+                width: 100%;
+                text-align: center;
+            }
+
+            .footer-text {
+                font-size: 14px;
+                color: #6c757d;
+            }
+
+            @media (max-width: 768px) {
+                .file-upload-component {
+                    padding: 15px;
+                    margin: 10px;
+                }
+
+                .btn {
+                    padding: 10px 15px;
+                    font-size: 14px;
+                }
+
+                .file-list-item {
+                    padding: 8px;
+                }
+
+                .file-icon {
+                    width: 30px;
+                    height: 30px;
+                }
+
+                .file-name {
+                    font-size: 12px;
+                }
+
+                .file-size {
+                    font-size: 10px;
+                }
+
+                .footer-text {
+                    font-size: 12px;
+                }
+            }
+        </style>
+    @endpush
 @endonce
