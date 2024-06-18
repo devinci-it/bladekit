@@ -1,5 +1,7 @@
-![logo](https://raw.githubusercontent.com/devinci-it/bladekit/main/icon.svg)
 
+<img width="355px" src="icon.svg"/>
+
+ 
 ---
 
 # devinci-it/bladekit
