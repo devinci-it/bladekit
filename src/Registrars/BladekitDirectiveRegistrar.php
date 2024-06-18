@@ -27,6 +27,8 @@ class BladekitDirectiveRegistrar
         self::registerIconDirective();
         self::registerBladekitAssetDirective();
         self::registerBladekitSVGDirective();
+        self::registerBladekitDebuggerDirective();
+        
 
     }
 
@@ -42,7 +44,7 @@ class BladekitDirectiveRegistrar
         Blade::directive('bladekitIcon', function ($expression) {
             // Check if the expression is a valid variable name
             if (preg_match('/^\$[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $expression)) {
-                return "<?php echo '<img src=\"' . e(PathHelper::getIconAssetUrl($expression)) . '\" alt=\"Icon\" class=\"anchor-icon\">'; ?>";
+                return "<?php echo '<img src=\"' . e(Devinci\Bladekit\Helpers\PathHelper::getIconAssetUrl($expression)) . '\" alt=\"Icon\" class=\"anchor-icon\">'; ?>";
             } else {
                 return '<?php echo ""; ?>'; // Return an empty string if $expression is not a valid variable
             }
@@ -170,32 +172,28 @@ class BladekitDirectiveRegistrar
             return $imagePath ? "<img src=\"$imagePath\" alt=\"$expression\">" : '';
         });
     }
-    public static function getBladekitAsset($name)
-    {
-        $directory = public_path('vendor/bladekit/images');
-        $files = File::files($directory);
 
-        foreach ($files as $file) {
-            if (strpos($file->getFilename(), $name) === 0) {
-                return asset('vendor/bladekit/images/' . $file->getFilename());
-            }
-        }
 
-        return null;
-    }
+
     protected static function registerBladekitSVGDirective()
     {
-        Blade::directive('bladekitSVG', function ($expression) {
+
+        Blade::directive('bladekitSVG', function ($expression) 
+        {
+
             $params = self::parseExpression($expression);
-            $name = $params[0];
+            $icon = trim($params[0], "");
             $size = $params[1] ?? null;
             $fill = $params[2] ?? null;
 
-            $imagePath = self::getBladekitAsset($name);
+            dd($expression, $icon, $size, $fill);
+
+ 
+            $imagePath = self::getBladekitAsset($icon);
             if ($imagePath) {
                 $assetPath =$imagePath;
                  $svgContent = file_get_contents(asset($assetPath));
-
+                
                 if ($size) {
                     $svgContent = preg_replace('/(width|height)="[^"]*"/', '', $svgContent);
                     $svgContent = preg_replace('/<svg/', '<svg width="' . $size . '" height="' . $size . '"', $svgContent);
@@ -206,16 +204,64 @@ class BladekitDirectiveRegistrar
                     $svgContent = preg_replace('/<svg/', '<svg fill="' . $fill . '"', $svgContent);
                 }
 
+ 
                 return $svgContent;
             }
 
-            return '';
+            return '<!-- SVG not found --!>';
         });
     }
 
-    protected static function parseExpression($expression)
+ 
+    public static function parseExpression($expression)
     {
-        return explode(',', str_replace(['(', ')', ' ', '\''], '', $expression));
+        // If the expression is wrapped in parentheses, remove them
+        if (strpos($expression, '(') === 0 && strrpos($expression, ')') === strlen($expression) - 1) {
+            $expression = substr($expression, 1, -1);
+        }
+
+        // Handle an expression with only one parameter (no commas)
+        if (strpos($expression, ',') === false) {
+            return [trim($expression, " '\"")];
+        }
+
+        // Split the expression into an array of parameters
+        $params = explode(',', $expression);
+
+        // Trim whitespace, quotes, and remove extra spaces from each parameter
+        $params = array_map(function ($param) {
+            return trim($param, " '\"");
+        }, $params);
+
+        return $params;
     }
+
+    public static function getBladekitAsset($name)
+    {
+        
+        $directory = public_path('vendor/bladekit/images');
+        $files = File::files($directory);
+
+        foreach ($files as $file) {
+            if (preg_match('/^' . preg_quote($name, '/') . '\..+\..+$/', $file->getFilename())) {
+                return \asset('vendor/bladekit/images/' . $file->getFilename());
+            }
+        }
+
+        return null;
+    }
+
+    protected static function registerBladekitDebuggerDirective()
+    {
+        Blade::directive('bladekitDebugger', function ($expression) {
+            if (app()->environment('local')) {
+                return "<?php dd({$expression}); ?>";
+            } else {
+                return '<?php /* Debugger disabled in production */ ?>';
+            }
+        });
+
+    }
+
     
 }

@@ -1,4 +1,5 @@
 <!-- resources/views/components/toggle-switch.blade.php -->
+@use('Devinci\Bladekit\Helpers\PathHelper')
 <div class="toggle-switch p2 {{ $classes }}">
 
     <label for="{{ $id }}" class="toggle-label text-color" style="font-weight: 570;">

@@ -16,6 +16,9 @@ class FormInput extends Component
     public $hideLabel;
     public $options;
 
+    public $isPassword;
+    public $icon;
+
     /**
      * Create a new component instance.
      *
@@ -29,7 +32,7 @@ class FormInput extends Component
      * @param array $options
      * @return void
      */
-    public function __construct($label, $name, $type = 'text', $value = '', $placeholder = '', $required = false, $hideLabel = false, $options = [])
+    public function __construct($label, $name, $type = 'text', $value = '', $placeholder = '', $required = false, $hideLabel = false, $options = [], $icon = '',$isPassword=false)
     {
         $this->label = $label;
         $this->name = $name;
@@ -39,15 +42,25 @@ class FormInput extends Component
         $this->required = $required;
         $this->hideLabel = $hideLabel;
         $this->options = $options;
+        $this->isPassword=$isPassword;
+        $this->icon = $icon;
     }
+    
+    
 
-    /**
-     * Get the view / contents that represent the component.
-     *
-     * @return \Illuminate\View\View|string
-     */
     public function render()
     {
-        return view('bladekit::form-units.form-input');
+        return view('bladekit::form-units.form-input', [
+            'label' => $this->label,
+            'name' => $this->name,
+            'type' => $this->type,
+            'value' => $this->value,
+            'placeholder' => $this->placeholder,
+            'required' => $this->required,
+            'hideLabel' => $this->hideLabel,
+            'options' => $this->options,
+            'icon' => $this->icon,
+            'isPassword' => $this->isPassword,
+        ]);
     }
 }

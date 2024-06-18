@@ -20,6 +20,8 @@ use Devinci\Bladekit\Views\UiCore\Dialog;
 use Devinci\Bladekit\Views\UiCore\MenuDropdown;
 use Devinci\Bladekit\Views\UiCore\Modal;
 use Devinci\Bladekit\Views\UiCore\InlineCode;
+use Devinci\Bladekit\Views\UiCore\Card;
+use Devinci\Bladekit\Views\UiCore\SidebarNav;
 
 
 use Devinci\Bladekit\Views\Widgets\PageHeader;
@@ -39,6 +41,11 @@ use Devinci\Bladekit\Views\UiControls\Toggle;
 use Devinci\Bladekit\Views\FormUnits\MultistepForm;
 use Devinci\Bladekit\Views\FormUnits\FormGroup;
 use Devinci\Bladekit\Views\FormUnits\FormInput;
+use Devinci\Bladekit\Views\Widgets\CarouselSlide;
+use Devinci\Bladekit\Views\Widgets\Carousel;
+use Devinci\Bladekit\Views\Widgets\AccordionSlide;
+use Devinci\Bladekit\Views\Widgets\Accordion;
+
 class BladekitViewRegistrar
 {
     protected $config;
@@ -85,10 +92,21 @@ class BladekitViewRegistrar
         Blade::component('bladekit-uicore::dialog', Dialog::class);
         Blade::component('bladekit-uicore::inline-code', InlineCode::class);
         Blade::component('bladekit-uicore::menu-dropdown', MenuDropdown::class);
+        Blade::component('bladekit-uicore::card', Card::class);
+        Blade::component('bladekit-uicore::modal', Modal::class);
+        Blade::component('bladekit-uicore::sidebar-nav', SidebarNav::class);
+
 
         Blade::component('bladekit-widgets::page-header', PageHeader::class);
         Blade::component('bladekit-widgets::code-snippet', CodeSnippet::class);
         Blade::component('bladekit-widgets::tab-panel', TabPanel::class);
+
+        Blade::component('bladekit-widgets::carousel', Carousel::class);
+        Blade::component('bladekit-widgets::carousel-slide', CarouselSlide::class);
+
+        Blade::component('bladekit-widgets::accordion', Accordion::class);
+        Blade::component('bladekit-widgets::accordion-slide', AccordionSlide::class);
+
 
         Blade::component('bladekit-partials::header', Header::class);
         Blade::component('bladekit-partials::footer', Footer::class);
@@ -115,8 +133,8 @@ class BladekitViewRegistrar
         Blade::component('bladekit-form::file-upload', FileUpload::class);
         Blade::component('bladekit-form::form-input', FormInput::class);
         Blade::component('bladekit-form::form-group', FormGroup::class);
-        Blade::component('bladekit-form::multistep-form', MultistepForm::class);    
-    
+        Blade::component('bladekit-form::multistep-form', MultistepForm::class);
+
         // *
 
         #$this->registerViews();

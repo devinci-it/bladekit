@@ -77,13 +77,13 @@
 
         let icon;
         if (file.type.startsWith('image/')) {
-            icon = '@bladekitIcon('image.svg')';
+            icon = '@bladekitAsset('portrait')';
         } else if (file.type.startsWith('audio/')) {
-            icon = '@bladekitIcon('audio.svg')';
+            icon = '@bladekitAsset('disc')';
         } else if (file.type.startsWith('video/')) {
-            icon = '@bladekitIcon('video.svg')';
+            icon = '@bladekitAsset('film')';
         } else {
-            icon = '@bladekitIcon('file.svg')';
+            icon = '@bladekitAsset('txt')';
         }
         const trashIcon = '@bladekitAsset("del")';
 

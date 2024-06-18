@@ -1,7 +1,5 @@
 
-@props(['name'=>''])
-
-@php
+ @php
     /**
           * Modal component.
           *
@@ -19,24 +17,34 @@
           * ```
           *
           * @param {string} name - The unique identifier for the modal instance.
+          * @param {string} title - Modal header.
           */
 @endphp
 
+@props(['name' => '', 'title' => ''])
+
+@php
+    $modalId = 'modal_' . $name;
+    $closeId = 'closeBtn_' . $name;
+    $confirmId = 'confirmBtn_' . $name;
+@endphp
+
 <div class="modal-overlay" id="modalOverlay_{{ $name }}" style="display: none;">
-    <div class="modal" id="modal_{{ $name }}">
+    <div class="modal" id="{{ $modalId }}">
         <div class="modal-header">
             <h2 class="title-small-text">{{ $title ?? 'Modal Title' }}</h2>
-            <button class="close-btn btn" id="closeBtn_{{ $name }}">&times;</button>
+            <button class="close-btn btn" id="{{ $closeId }}">&times;</button>
         </div>
         <div class="modal-body">
             {{ $slot }}
         </div>
         <div class="modal-footer">
-            <button class="confirm-btn btn round" id="confirmBtn_{{ $name }}">Confirm</button>
+            <button class="confirm-btn btn round" id="{{ $confirmId }}">Confirm</button>
         </div>
     </div>
 </div>
 
+@once
 @push('styles')
     <style>
         /* Animation for modal shake */
@@ -118,45 +126,77 @@
         }
     </style>
 @endpush
+
+
 @push('scripts')
-    <script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
 
-
-        document.addEventListener('DOMContentLoaded', function () {
-            const modalOverlay = document.getElementById('modalOverlay_{{ $name }}');
-            const modal = document.getElementById('modal_{{ $name }}');
-            const closeBtn = document.getElementById('closeBtn_{{ $name }}');
-            const confirmBtn = document.getElementById('confirmBtn_{{ $name }}');
+        // Function to create modal functions dynamically
+        function createModalFunctions(modalName) {
+            const overlay = document.getElementById('modalOverlay_' + modalName);
+            const modalElement = overlay.querySelector('.modal');
+            const closeElement = modalElement.querySelector('.close-btn');
+            const confirmElement = modalElement.querySelector('.confirm-btn');
 
             function showModal() {
-                modalOverlay.style.display = 'flex';
+                overlay.style.display = 'flex';
                 document.body.classList.add('modal-open');
             }
 
             function hideModal() {
-                modalOverlay.style.display = 'none';
+                overlay.style.display = 'none';
                 document.body.classList.remove('modal-open');
             }
 
             function shakeModal() {
-                modal.classList.add('shake');
+                modalElement.classList.add('shake');
                 setTimeout(() => {
-                    modal.classList.remove('shake');
+                    modalElement.classList.remove('shake');
                 }, 500);
             }
 
-            closeBtn.addEventListener('click', hideModal);
-            confirmBtn.addEventListener('click', hideModal);
+            closeElement.addEventListener('click', hideModal);
+            confirmElement.addEventListener('click', hideModal);
 
-            // Close modal when clicking outside the modal
-            modalOverlay.addEventListener('click', function (event) {
-                if (event.target === modalOverlay) {
+            overlay.addEventListener('click', function (event) {
+                if (event.target === overlay) {
                     shakeModal();
                 }
             });
 
-            // Optionally, you can export the showModal function to be called from other scripts
-            window.showModal_{{ $name }} = showModal;
+            return {
+                showModal,
+                hideModal,
+                shakeModal
+            };
+        }
+
+        // Add event listener to handle modal opening using event delegation
+        document.addEventListener('click', function (event) {
+            const button = event.target.closest('[data-modal-target]');
+            if (button) {
+                const modalName = button.getAttribute('data-modal-target');
+                const modalFunctions = window[`modalFunctions_${modalName}`];
+                if (modalFunctions) {
+                    modalFunctions.showModal();
+                } else {
+                    console.error(`Modal functions for "${modalName}" not found.`);
+                }
+            }
         });
-    </script>
+
+        // Example of exporting modal functions for each modal object
+        // Replace this with your specific modal setup logic in your application
+        const modalButtons = document.querySelectorAll('[data-modal-target]');
+
+        modalButtons.forEach(button => {
+            const modalName = button.getAttribute('data-modal-target');
+            window[`modalFunctions_${modalName}`] = createModalFunctions(modalName);
+        });
+
+    });
+</script>
 @endpush
+@endonce
+

@@ -109,7 +109,33 @@ return [
         'level' => 'debug',
         // Add any additional logger configurations here
     ],
+    
 
+    /*---------------------------------------------------------------------
+     *
+     *  sidebar configuration values.
+     * --------------------------------------------------------------------
+     */
+
+    'sidebar' => [
+        [
+            'name' => 'Dashboard',
+            'url' => '/dashboard',
+            'icon' => 'home',
+        ],
+        [
+            'name' => 'Profile',
+            'url' => '/profile',
+            'icon' => 'user',
+        ],
+        [
+            'name' => 'Settings',
+            'url' => '/settings',
+            'icon' => 'settings',
+        ],
+    ],
+    
+    
     /*---------------------------------------------------------------------
      *
      *  Views\Partials\Footer configuration values.
